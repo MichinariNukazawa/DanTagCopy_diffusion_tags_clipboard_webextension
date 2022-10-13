@@ -6,10 +6,13 @@ diffusionのプロンプトに使うタグを一括で取得して呪文探し�
 
 <img src="docs/20221014_example.png" width="500">  
 
+# Install
+- zipファイルを[Download][Download]する。  
+- zipファイルを解凍。  
+- Chromeの拡張機能から「パッケージ化されていない拡張機能を読み込む」で解凍したディレクトリを指定する。  
+
 # License
 Public Domain
-
-# 主な機能
 
 # TODO
 - FireFox対応  
@@ -21,6 +24,7 @@ twitter: [@MNukazawa][twitter]
 
 Develop by Michinari.Nukazawa, in project "[daisy bell][pixiv_booth_project_daisy_bell]".  
 
+[download]: https://github.com/MichinariNukazawa/DanTagCopy_diffusion_tags_clipboard_webextension/releases/tag/Releases
 [pixiv_booth_project_daisy_bell]: https://daisy-bell.booth.pm/
 [mailto]: mailto:michinari.nukazawa@gmail.com
 [twitter]: https://twitter.com/MNukazawa
