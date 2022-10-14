@@ -1,21 +1,21 @@
 {
-  "manifest_version": 2,
-  "name": "DanTagCopy",
-  "version": "1.0",
+	"manifest_version": 2,
+	"name": "DanTagCopy",
+	"version": "1.0",
 
-  "background": {
-    "scripts": ["event.js"],
-    "persistent": false
-  },
+	"background": {
+		"scripts": ["event.js"],
+		"persistent": false
+	},
 
-  "content_scripts": [{
-    "matches": ["*://*.danbooru.donmai.us/*"],
-    "js": ["content.js"]
-  }],
+	"content_scripts": [{
+		"matches": ["*://*.danbooru.donmai.us/*"],
+		"js": ["content.js"]
+	}],
 
-  "permissions": [
-    "activeTab",
-    "clipboardWrite",
-    "contextMenus"
-  ]
+	"permissions": [
+		"activeTab",
+		"clipboardWrite",
+		"contextMenus"
+	]
 }
