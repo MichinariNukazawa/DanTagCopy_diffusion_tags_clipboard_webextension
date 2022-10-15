@@ -55,6 +55,10 @@ function onSelectedTabs(tabs)
 function onSelectedTab(tab)
 {
 	chrome.tabs.sendMessage(tab.id, {targetKind: 'diffusion'}, (response) => {
+		if (chrome.runtime.lastError) {
+			onError(chrome.runtime.lastError)
+			return
+		}
 		console.log(response);
 		const s = response.collected_tags.join(' ')
 		setClip_(s)
@@ -62,7 +66,18 @@ function onSelectedTab(tab)
 }
 
 function onError(error) {
-	console.error(`Error: ${error}`);
+	console.error('Error:', error);
+	const msg = error.message
+	chrome.notifications.create(
+		"ErrorInDanTagsCopy",
+		{
+			type: "basic",
+			iconUrl: "icon128.png",
+			title: 'DanTagsCopy',
+			//message: `Please try reload page.\n ${msg}`
+			message: `Error: Please try reload page.`
+		}
+	);
 }
 
 chrome.contextMenus.onClicked.addListener((item) => {
