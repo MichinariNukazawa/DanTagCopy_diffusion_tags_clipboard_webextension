@@ -8,13 +8,14 @@ diffusionのプロンプトに使うタグを一括で取得して呪文探し�
 <img src="docs/20221014_example.png" width="500">  
 
 # Install
-- zipファイルを[Download][Download]する。  
 ## Chrome
+- zipファイルを[Download][Download]する。  
 - zipファイルを解凍。  
 - Chromeの拡張機能から「パッケージ化されていない拡張機能を読み込む」で解凍したディレクトリを指定する。  
 ## FireFox
 [Firefox Add-ons](https://addons.mozilla.org/ja/firefox/addon/dantagcopy/)  
 または、
+- zipファイルを[Download][Download]する。  
 - FireFoxの拡張機能から「一時的なアドオンを読み込む」でダウンロードしたzipファイルを指定する。  
 
 
@@ -31,7 +32,7 @@ twitter: [@MNukazawa][twitter]
 
 Develop by Michinari.Nukazawa, in project "[daisy bell][pixiv_booth_project_daisy_bell]".  
 
-[download]: https://github.com/MichinariNukazawa/DanTagCopy_diffusion_tags_clipboard_webextension/releases/tag/Releases
+[download]: https://github.com/MichinariNukazawa/DanTagCopy_diffusion_tags_clipboard_webextension/releases/
 [pixiv_booth_project_daisy_bell]: https://daisy-bell.booth.pm/
 [mailto]: mailto:michinari.nukazawa@gmail.com
 [twitter]: https://twitter.com/MNukazawa
