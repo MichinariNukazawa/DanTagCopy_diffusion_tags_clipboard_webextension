@@ -23,7 +23,6 @@ diffusionのプロンプトに使うタグを一括で取得して呪文探し�
 Public Domain
 
 # TODO
-- FireFox対応  
 - 収集するタグの種類をカスタムすることのできる設定画面  
 
 # Contact
