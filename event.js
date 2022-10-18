@@ -4,7 +4,8 @@
 chrome.runtime.onInstalled.addListener(() => {
 	const parent = chrome.contextMenus.create({
 		id: 'diffusion',
-		title: 'DanTagCopy:tags to clipboard'
+		title: 'DanTagCopy:tags to clipboard',
+		contexts: ["all"]
 	});
 });
 
