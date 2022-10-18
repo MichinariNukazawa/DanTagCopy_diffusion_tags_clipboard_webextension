@@ -13,6 +13,8 @@ diffusionのプロンプトに使うタグを一括で取得して呪文探し�
 - zipファイルを解凍。  
 - Chromeの拡張機能から「パッケージ化されていない拡張機能を読み込む」で解凍したディレクトリを指定する。  
 ## FireFox
+[Firefox Add-ons](https://addons.mozilla.org/ja/firefox/addon/dantagcopy/)  
+または、
 - FireFoxの拡張機能から「一時的なアドオンを読み込む」でダウンロードしたzipファイルを指定する。  
 
 
