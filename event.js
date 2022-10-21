@@ -98,17 +98,26 @@ function onSelectedTab(tab)
 		}
 		//console.log(response);
 
+		const charas = response.collected_tagst.characters
+		const genes = response.collected_tagst.generals
+		let tags =  charas.concat(genes)
+
+		for( let i = 0; i < tags.length; i++){
+			// プロンプトでは括弧は強弱指定となるためタグの括弧をエスケープする
+			tags[i] = tags[i].replaceAll('(', '\\(')
+			tags[i] = tags[i].replaceAll(')', '\\)')
+		}
+
 		let s = ''
 		switch(myconf.targetKind){
 		case 'diffusion':
-			let tags = response.collected_tags
 			for( let i = 0; i < tags.length; i++){
 				tags[i] = tags[i].replaceAll(' ', '_')
 			}
 			s = tags.join(' ')
 			break
 		case 'novelai':
-			s = response.collected_tags.join(', ')
+			s = tags.join(', ')
 			break
 		default:
 			showErrorMsg('BUG invalid:' + myconf.targetKind)
