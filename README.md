@@ -7,9 +7,12 @@ danboooruページ上から画像のタグを取得できます。
 danbooruのページで見ている画像に付けられたタグを、クリップボードに集めるFireFoxアドオン,Chrome拡張です。  
 diffusionのプロンプトに使うタグを集める作業を単純化して呪文探しを助けます。  
   
-タグは集めた際にStableDifussion, NovelAIの表記に自動変換。  
 
 <img src="docs/20221014_example.png" width="500">  
+
+プロンプトはStableDifussion, NovelAI向けに変換することができます。  
+
+<img src="docs/20221021_popup.png" width="200">  
 
 # Install
 ## Chrome
