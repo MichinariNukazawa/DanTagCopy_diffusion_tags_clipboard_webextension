@@ -14,6 +14,12 @@ diffusionのプロンプトに使うタグを集める作業を単純化して�
 
 <img src="docs/20221021_popup.png" width="200">  
 
+# 使い方
+- 生成したい画像を思い浮かべながら[danbooru][danbooru]で画像を探す。
+- 見つけた画像のページで右クリックしてDanTagCopyを実行。
+- クリップボードにタグがコピーされる。
+- StableDiffusion, NodelAIにプロンプトを貼り付けて画像を生成！
+
 # Install
 ## Chrome
 - zipファイルを[Download][Download]する。  
@@ -43,6 +49,7 @@ twitter: [@MNukazawa][twitter]
 
 Develop by Michinari.Nukazawa, in project "[daisy bell][pixiv_booth_project_daisy_bell]".  
 
+[danbooru]: https://danbooru.donmai.us/
 [download]: https://github.com/MichinariNukazawa/DanTagCopy_diffusion_tags_clipboard_webextension/releases/
 [pixiv_booth_project_daisy_bell]: https://daisy-bell.booth.pm/
 [mailto]: mailto:michinari.nukazawa@gmail.com
