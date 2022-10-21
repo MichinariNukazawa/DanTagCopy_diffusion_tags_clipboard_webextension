@@ -104,8 +104,12 @@ function onSelectedTab(tab)
 
 		for( let i = 0; i < tags.length; i++){
 			// プロンプトでは括弧は強弱指定となるためタグの括弧をエスケープする
+			// '{}'は(おそらく)タグに含まれないのでしていない
+			// '[]'もいまのところ見かけていないが念のため
 			tags[i] = tags[i].replaceAll('(', '\\(')
 			tags[i] = tags[i].replaceAll(')', '\\)')
+			tags[i] = tags[i].replaceAll('[', '\\[')
+			tags[i] = tags[i].replaceAll(']', '\\]')
 		}
 
 		let s = ''
