@@ -2,8 +2,12 @@ DanTagCopy - diffusion tags collecter from danbooru to clipboard WebExtensions
 ----
 
 In danbooru page collect tags for diffusion prompt.  
-danbooruのページで画像に付けられたタグをクリップボードに集めるFireFoxアドオン,Chrome拡張です。  
-diffusionのプロンプトに使うタグを一括で取得して呪文探しを助けます。  
+danboooruページ上から画像のタグを取得できます。  
+  
+danbooruのページで見ている画像に付けられたタグを、クリップボードに集めるFireFoxアドオン,Chrome拡張です。  
+diffusionのプロンプトに使うタグを集める作業を単純化して呪文探しを助けます。  
+  
+タグは集めた際にStableDifussion, NovelAIの表記に自動変換。  
 
 <img src="docs/20221014_example.png" width="500">  
 
@@ -20,10 +24,15 @@ diffusionのプロンプトに使うタグを一括で取得して呪文探し�
 
 
 # License
-Public Domain
+Public Domain  
 
 # TODO
-- 収集するタグの種類をカスタムすることのできる設定画面  
+- タグの自動カスタム
+  - 自動タグソート(どのような順番に？)
+  - 自動追加・除外タグリスト
+低優先度・要検討
+- 表記設定切り替え時にクリップボードへ反映  
+- ブラウザシークレットモード対応  
 
 # Contact
 mail: [michinari.nukazawa@gmail.com][mailto]  

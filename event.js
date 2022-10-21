@@ -1,7 +1,43 @@
 'use strict';
 
+// ******** Configure ********
+let myconf = {
+	'ver': '1.0',
+	'targetKind': 'diffusion'
+}
+
+function getMyconf(){
+	return myconf;
+}
+function loadMyconf(){
+	chrome.storage.local.get(function(items) {
+		console.log('loaded')
+		if(Object.keys(items).length === 0){
+			console.log('nothing save, use default.')
+			return
+		}
+		if(! items.hasOwnProperty('targetKind')){
+			console.error('invalid data, use default.')
+			return
+		}
+		console.log(items.targetKind)
+		myconf = items
+	})
+}
+function saveTargetKind(targetKind){
+	myconf.targetKind = targetKind
+	chrome.storage.local.set(myconf, function() {
+		console.log('saved')
+	})
+}
+
+// ******** Core ********
+
 {
 chrome.runtime.onInstalled.addListener(() => {
+
+	loadMyconf();
+
 	const parent = chrome.contextMenus.create({
 		id: 'diffusion',
 		title: 'DanTagCopy:tags to clipboard',
@@ -60,23 +96,43 @@ function onSelectedTab(tab)
 			onError(chrome.runtime.lastError)
 			return
 		}
-		console.log(response);
-		const s = response.collected_tags.join(' ')
+		//console.log(response);
+
+		let s = ''
+		switch(myconf.targetKind){
+		case 'diffusion':
+			let tags = response.collected_tags
+			for( let i = 0; i < tags.length; i++){
+				tags[i] = tags[i].replaceAll(' ', '_')
+			}
+			s = tags.join(' ')
+			break
+		case 'novelai':
+			s = response.collected_tags.join(', ')
+			break
+		default:
+			showErrorMsg('BUG invalid:' + myconf.targetKind)
+		}
+
 		setClip_(s)
 	})
 }
 
-function onError(error) {
+function onError(error){
 	console.error('Error:', error);
 	const msg = error.message
+	showErrorMsg(msg)
+}
+
+function showErrorMsg(msg){
 	chrome.notifications.create(
 		"ErrorInDanTagsCopy",
 		{
 			type: "basic",
 			iconUrl: "icon128.png",
 			title: 'DanTagsCopy',
-			//message: `Please try reload page.\n ${msg}`
-			message: `Error: Please try reload page.`
+			message: `Error: Please try reload page.\n ${msg}`
+			//message: `Error: Please try reload page.`
 		}
 	);
 }

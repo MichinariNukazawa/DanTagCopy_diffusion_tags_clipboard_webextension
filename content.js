@@ -33,7 +33,7 @@ function collectTags_(targetKind)
 
 		const es = pe.getElementsByClassName("search-tag")
 		for(const e of es){
-			let tag = e.innerText.replaceAll(' ', '_')
+			let tag = e.innerText
 			tags.push(tag)
 		}
 	}
