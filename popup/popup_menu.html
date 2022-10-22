@@ -7,11 +7,26 @@
 	<body>
 		<h2><img src="../icon128.png" height="24" width="24">DanTagCopy</h2>
 		<h3>Configure</h3>
-		<div id='loading_error_message'>**Loading error. (ex. not woring in secret mode.)**</div>
+			<div id='loading_error_message'>**Loading error. (ex. not woring in secret mode.)**</div>
+
+			<h4>Tags Format</h4>
 			<input type="radio" id="diffusion" name="target_kind" value="diffusion" disabled="disabled">
 			<label for="diffusion">Diffusion: space sep, underscore(ex. "1girl cat_ears")</label><br>
 			<input type="radio" id="novelai" name="target_kind" value="novelai" disabled="disabled">
 			<label for="novelai">NovelAi: comma sep(ex. "1girl, cat ears")</label><br>
+
+			<h4>Escape</h4>
+			<input type="checkbox" id="escape_brackets" name="escape_brackets" value="escape_brackets" disabled="disabled">
+			<label for="escape_brackets">escape_brackets: (ex. "suzuran (arknights)" -> "suzuran \(arknights\)")</label><br>
+
+			<h4>Tags Sort</h4>
+			<input type="radio" id="character_sort" name="sort_kind" value="character_sort" disabled="disabled">
+			<label for="character_sort">character_sort: body group, clothes group...other</label><br>
+			<input type="radio" id="scene_sort" name="sort_kind" value="scene_sort" disabled="disabled">
+			<label for="scene_sort">scene_sort: pose and action group, background...other</label><br>
+			<input type="radio" id="no_sort" name="sort_kind" value="no_sort" disabled="disabled">
+			<label for="no_sort">no_sort: not sorted. (alphabet)</label><br>
+
 		<hr>
 
 		<h3>Bug report</h3>

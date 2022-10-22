@@ -3,7 +3,9 @@
 // ******** Configure ********
 let myconf = {
 	'ver': '1.0',
-	'targetKind': 'diffusion'
+	'targetKind': 'diffusion',
+	'escapeBrackets': true,
+	'sortKind': 'character_sort'
 }
 
 function getMyconf(){
@@ -11,7 +13,7 @@ function getMyconf(){
 }
 function loadMyconf(){
 	chrome.storage.local.get(function(items) {
-		console.log('loaded')
+		console.log('loaded', items)
 		if(Object.keys(items).length === 0){
 			console.log('nothing save, use default.')
 			return
@@ -21,11 +23,25 @@ function loadMyconf(){
 			return
 		}
 		console.log(items.targetKind)
-		myconf = items
+		myconf = Object.assign(myconf, items)
+		// 新規設定項目を追加した後の起動では、読み込んだ設定Objに必要項目がないので、初期値で埋める
+		console.log('merged', myconf)
 	})
 }
 function saveTargetKind(targetKind){
 	myconf.targetKind = targetKind
+	chrome.storage.local.set(myconf, function() {
+		console.log('saved')
+	})
+}
+function saveSortKind(sortKind){
+	myconf.sortKind = sortKind
+	chrome.storage.local.set(myconf, function() {
+		console.log('saved')
+	})
+}
+function saveEscapeBrackets(escapeBrackets){
+	myconf.escapeBrackets = escapeBrackets
 	chrome.storage.local.set(myconf, function() {
 		console.log('saved')
 	})
@@ -100,23 +116,25 @@ function onSelectedTab(tab)
 
 		const charas = response.collected_tagst.characters
 		const genes = response.collected_tagst.generals
-		let tagarrays = sortingTags(genes)
+		let tagarrays = sortingTags(getMyconf().sortKind, genes)
 		tagarrays.unshift(charas)
 		console.log(tagarrays)
 
-		tagarrays.forEach((tagarr, index) => {
-			const newtagarr = tagarr.map((tag) => {
-				// プロンプトでは括弧は強弱指定となるためタグの括弧をエスケープする
-				// '{}'は(おそらく)タグに含まれないのでしていない
-				// '[]'もいまのところ見かけていないが念のため
-				tag = tag.replaceAll('(', '\\(')
-				tag = tag.replaceAll(')', '\\)')
-				tag = tag.replaceAll('[', '\\[')
-				tag = tag.replaceAll(']', '\\]')
-				return tag
+		if(getMyconf().escapeBrackets){
+			tagarrays.forEach((tagarr, index) => {
+				const newtagarr = tagarr.map((tag) => {
+					// プロンプトでは括弧は強弱指定となるためタグの括弧をエスケープする
+					// '{}'は(おそらく)タグに含まれないのでしていない
+					// '[]'もいまのところ見かけていないが念のため
+					tag = tag.replaceAll('(', '\\(')
+					tag = tag.replaceAll(')', '\\)')
+					tag = tag.replaceAll('[', '\\[')
+					tag = tag.replaceAll(']', '\\]')
+					return tag
+				})
+				tagarrays[index] = newtagarr
 			})
-			tagarrays[index] = newtagarr
-		})
+		}
 
 		let s = ''
 		switch(myconf.targetKind){
@@ -189,7 +207,8 @@ chrome.contextMenus.onClicked.addListener((item) => {
 })
 
 // ******** Ordering Structure Tags ********
-function sortingTags(tags){
+function sortingTags(sortKind, tags){
+
 	// ここで並べた順にソートとなる可能性はあるので、並び順は考えて置く
 	// https://danbooru.donmai.us/wiki_pages/tag_groups
 	const bodyWords = [
@@ -611,10 +630,27 @@ function sortingTags(tags){
 	}
 
 	let dsttags = []
-	dsttags.push(bodys)
-	dsttags.push(croths)
-	dsttags.push(colors)
-	dsttags.push(others)
+	switch(sortKind){
+		case 'character_sort':
+			dsttags.push(bodys)
+			dsttags.push(croths)
+			dsttags.push(colors)
+			dsttags.push(others)
+			break
+		case 'scene_sort':
+			dsttags.push(others)
+			dsttags.push(colors)
+			dsttags.push(croths)
+			dsttags.push(bodys)
+			break
+		case 'no_sort':
+			// わざわざここまで来てする必要もないのだが、
+			// コードの見通し的にここに置く
+			dsttags.push(tags)
+			break
+		default:
+			showErrorMsg('BUG invalid sort:' + sortKind)
+	}
 
 	console.log('dsttags')
 	console.log(dsttags)
