@@ -2,8 +2,13 @@
 
 chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
+		//if('content' !== request.dtcMessageTarget){
+		//	console.log('through receive message not target.', request.dtcMessageTarget)
+		//}
 		const tagst = collectTagst_(request.targetKind)
-		sendResponse({collected_tagst: tagst});
+		sendResponse({
+			collected_tagst: tagst
+		});
 	}
 );
 

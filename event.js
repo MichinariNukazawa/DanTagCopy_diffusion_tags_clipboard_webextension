@@ -61,6 +61,34 @@ chrome.runtime.onInstalled.addListener(() => {
 	});
 });
 
+chrome.runtime.onMessage.addListener(
+	function(request, sender, sendResponse) {
+		if('service_worker' !== request.dtcMessageTarget){
+			console.log('through receive message not target.', request.dtcMessageTarget)
+			return
+		}
+		switch(request.dtcMessageKind){
+			case 'target_kind':
+				saveTargetKind(request.targetKind)
+				break
+			case 'sort_kind':
+				saveSortKind(request.sortKind)
+				break
+			case 'escape_brackets':
+				saveEscapeBrackets(request.escapeBrackets)
+				break
+			case 'get_my_conf':
+				const myconf = getMyconf()
+				chrome.runtime.sendMessage({
+					'dtcMessageTarget': 'popup',
+					'myconf': myconf
+				});
+				break
+		}
+		// 本当はsave完了のコールバックを待って応答を返したいが
+	}
+);
+
 function setClip_(text)
 {
 	// writeText() is good api implement,
@@ -107,7 +135,7 @@ function onSelectedTabs(tabs)
 
 function onSelectedTab(tab)
 {
-	chrome.tabs.sendMessage(tab.id, {targetKind: 'diffusion'}, (response) => {
+	chrome.tabs.sendMessage(tab.id,	{'dtcMessageTarget': 'content',	targetKind: 'diffusion'}, (response) => {
 		if (chrome.runtime.lastError) {
 			onError(chrome.runtime.lastError)
 			return
