@@ -140,9 +140,10 @@ function onSelectedTabs(tabs)
 		}
 			break
 		case 'novelai':
-			const ss = tagarrays.map((tagarr) => {
+			let ss = tagarrays.map((tagarr) => {
 				return tagarr.join(', ')
 			})
+			ss = ss.filter((tarray) => 0 < tarray.length)
 			s = ss.join(',  ')
 			break
 		default:
