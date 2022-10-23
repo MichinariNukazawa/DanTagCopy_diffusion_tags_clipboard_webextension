@@ -5,10 +5,27 @@ chrome.runtime.onMessage.addListener(
 		//if('content' !== request.dtcMessageTarget){
 		//	console.log('through receive message not target.', request.dtcMessageTarget)
 		//}
-		const tagst = collectTagst_(request.targetKind)
-		sendResponse({
-			collected_tagst: tagst
-		});
+
+		switch(request.dtcRequestKind){
+			case 'collect_tags':
+				const tagst = collectTagst_(request.targetKind)
+				sendResponse({
+					collected_tagst: tagst
+				});
+				break
+			case 'write_clipboard':
+				navigator.clipboard.writeText(request.text).then(() => {
+					// clipboard successfully set
+					console.log('success.')
+				}).catch( (e) => {
+					// clipboard write failed
+					console.warn('failed.', e)
+					alert('Error clipboard cant writed. :' + e.message)
+				});
+				break
+			default:
+				alert('BUG: internal invalid request. :' + request.dtcRequestKind)
+		}
 	}
 );
 
@@ -51,3 +68,31 @@ function collectTagst_(targetKind)
 	return tagst
 }
 
+function writeClipboard_(text)
+{
+	// writeText() is good api implement,
+	// but dont working in chrome (cause V2 manifest ?).
+	navigator.clipboard.writeText(text)
+	/*
+	navigator.clipboard.writeText(s).then(() => {
+		// clipboard successfully set
+		console.log('success.')
+	}).catch( (e) => {
+		// clipboard write failed
+		console.warn('failed.', e)
+		onError(e)
+	});
+	*/
+
+/*
+	const input = document.createElement('input');
+	document.body.appendChild(input);
+	input.value = text;
+	input.focus();
+	input.select();
+	const result = document.execCommand('copy');
+	if (result === 'unsuccessful') {
+		console.error('Failed to copy text.');
+	}
+*/
+}

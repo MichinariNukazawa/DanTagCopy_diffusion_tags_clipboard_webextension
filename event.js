@@ -89,54 +89,10 @@ chrome.runtime.onMessage.addListener(
 	}
 );
 
-function setClip_(text)
-{
-	// writeText() is good api implement,
-	// but dont working in chrome (cause V2 manifest ?).
-/*
-	navigator.clipboard.writeText(s).then(() => {
-		// clipboard successfully set
-		console.log('success.')
-	}, () => {
-		// clipboard write failed
-		console.warn('failed.')
-	});
-*/
-
-	const input = document.createElement('input');
-	document.body.appendChild(input);
-	input.value = text;
-	input.focus();
-	input.select();
-	const result = document.execCommand('copy');
-	if (result === 'unsuccessful') {
-		console.error('Failed to copy text.');
-	}
-}
-
 function onSelectedTabs(tabs)
 {
-	console.log('call onSelectedTabs');
-	for (const tab of tabs) {
-		// tab.url requires the `tabs` permission or a matching host permission.
-		console.log(tab.url);
-	}
-	if(! tabs){
-		console.warn('tabs is none')
-		return
-	}
-	if(1 != tabs.length){
-		console.warn('invalid tabs lenght.' + tabs.length)
-		return
-	}
-	const tab = tabs[0]
-	onSelectedTab(tab)
-}
-
-function onSelectedTab(tab)
-{
-	chrome.tabs.sendMessage(tab.id,	{'dtcMessageTarget': 'content',	targetKind: 'diffusion'}, (response) => {
-		if (chrome.runtime.lastError) {
+	let onResponsedCollectTags = (response) => {
+		if (chrome.runtime.lastError) { // manifest v2 (firefox) only need?
 			onError(chrome.runtime.lastError)
 			return
 		}
@@ -193,8 +149,21 @@ function onSelectedTab(tab)
 			showErrorMsg('BUG invalid:' + myconf.targetKind)
 		}
 
-		setClip_(s)
-	})
+		// writeClipboard
+		// lamdbaキャプチャしたタブIDをそのまま使っているが動いてる。
+		chrome.tabs.sendMessage(tabs[0].id, {'dtcMessageTarget': 'content', 'dtcRequestKind': 'write_clipboard', 'text': s})
+	}
+
+	// dirty switch
+	// chrome.tabs.sendMessage() promise is different.
+	if(typeof browser !== 'undefined'){
+		// firefox
+		chrome.tabs.sendMessage(tabs[0].id, {'dtcMessageTarget': 'content', 'dtcRequestKind': 'collect_tags'}, onResponsedCollectTags)
+	}else{
+		// chrome v3
+		let sending = chrome.tabs.sendMessage(tabs[0].id, {'dtcMessageTarget': 'content', 'dtcRequestKind': 'collect_tags'})
+		sending.then(onResponsedCollectTags).catch(onError)
+	}
 }
 
 function onError(error){
@@ -218,8 +187,6 @@ function showErrorMsg(msg){
 
 chrome.contextMenus.onClicked.addListener((item) => {
 	console.log('onClicked MenuItem')
-	//console.log(item);
-	//console.log(item.menuItemId);
 
 	// dirty switch
 	// chrome.tabs.query() in firefox not working (not callback).
@@ -229,8 +196,8 @@ chrome.contextMenus.onClicked.addListener((item) => {
 		// firefox
 		browser.tabs.query({active: true, lastFocusedWindow:true}).then(onSelectedTabs, onError);
 	}else{
-		// chrome
-		chrome.tabs.getSelected(onSelectedTab);
+		let querying = chrome.tabs.query({active: true, lastFocusedWindow:true})
+		querying.then(onSelectedTabs).catch(onError);
 	}
 })
 

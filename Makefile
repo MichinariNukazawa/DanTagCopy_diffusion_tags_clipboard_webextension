@@ -1,12 +1,27 @@
 
 PACKAGE_NAME=DanTagCopy_webextension
-PACKAGE_DIR=${PACKAGE_NAME}
+FIREFOX_PACKAGE_DIR=output.firefox.${PACKAGE_NAME}
+CHROME_PACKAGE_DIR=output.chrome.${PACKAGE_NAME}
 
-relase:
-	rm -rf ${PACKAGE_DIR}
+.PHONY: release firefox chrome
+
+release: firefox chrome
+
+firefox:
+	rm -rf ${FIREFOX_PACKAGE_DIR}
 	rm -rf ./${PACKAGE_NAME}.zip
-	mkdir ${PACKAGE_DIR}
-	cp -r *.js *.json icon*.png popup/ ${PACKAGE_DIR}/
-	cd ${PACKAGE_DIR} && zip -r ../${PACKAGE_NAME}.zip *
-	rm -rf ${PACKAGE_DIR}
+	mkdir ${FIREFOX_PACKAGE_DIR}
+	cp -r *.js icon*.png popup/ ${FIREFOX_PACKAGE_DIR}/
+	cp manifest.json ${FIREFOX_PACKAGE_DIR}/manifest.json
+	cd ${FIREFOX_PACKAGE_DIR} && zip -r ../${PACKAGE_NAME}_firefox.zip *
+	rm -rf ${FIREFOX_PACKAGE_DIR}
+
+chrome:
+	rm -rf ${CHROME_PACKAGE_DIR}
+	rm -rf ./${PACKAGE_NAME}.zip
+	mkdir ${CHROME_PACKAGE_DIR}
+	cp -r *.js icon*.png popup/ ${CHROME_PACKAGE_DIR}/
+	cp chrome.manifest.json ${CHROME_PACKAGE_DIR}/manifest.json
+	cd ${CHROME_PACKAGE_DIR} && zip -r ../${PACKAGE_NAME}_chrome.zip *
+	#rm -rf ${CHROME_PACKAGE_DIR}
 

@@ -29,3 +29,6 @@ doxygen/
 *.mp4
 *.zip
 
+#
+output*
+
