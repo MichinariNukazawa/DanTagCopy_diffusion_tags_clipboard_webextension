@@ -22,16 +22,12 @@
 		"persistent": false
 	},
 
-	"content_scripts": [{
-		"matches": ["*://*.danbooru.donmai.us/*"],
-		"js": ["content.js"]
-	}],
-
 	"permissions": [
 		"activeTab",
 		"clipboardWrite",
 		"notifications",
 		"storage",
+		"scripting",
 		"contextMenus"
 	]
 }

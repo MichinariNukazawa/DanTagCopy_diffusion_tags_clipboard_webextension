@@ -21,17 +21,13 @@
 		"service_worker": "event.js"
 	},
 
-	"content_scripts": [{
-		"matches": ["*://*.danbooru.donmai.us/*"],
-		"js": ["content.js"]
-	}],
-
 	"permissions": [
 		"tabs",
 		"activeTab",
 		"clipboardWrite",
 		"notifications",
 		"storage",
+		"scripting",
 		"contextMenus"
 	]
 }

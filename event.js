@@ -47,9 +47,83 @@ function saveEscapeBrackets(escapeBrackets){
 	})
 }
 
+// ******** content script ********
+
+function writeClipboard_(text)
+{
+	console.log('call', text)
+
+	// writeText() is good api implement,
+	// but dont working in chrome (cause V2 manifest ?).
+	navigator.clipboard.writeText(text)
+	/*
+	navigator.clipboard.writeText(s).then(() => {
+		// clipboard successfully set
+		console.log('success.')
+	}).catch( (e) => {
+		// clipboard write failed
+		console.warn('failed.', e)
+		onError(e)
+	});
+	*/
+
+/*
+	// Fallback clipboard copy.
+	// This is not working in V3 background.
+	// (In page content scripting is successable.)
+	const input = document.createElement('input');
+	document.body.appendChild(input);
+	input.value = text;
+	input.focus();
+	input.select();
+	const result = document.execCommand('copy');
+	if (result === 'unsuccessful') {
+		console.error('Failed to copy text.');
+	}
+*/
+}
+
+function collectTagst_()
+{
+	let sidebarElement = document.getElementById("sidebar")
+	if(! sidebarElement){
+		console.warn('sidebar element not exist.')
+		return []
+	}
+
+	// character-tag-list
+	// general-tag-list
+	// collect tags, `posts?tags=*` 的なタグ該当画像一覧ページでの収集に対応する
+
+	const collectTagsFronTagType_ = (tagType) => {
+		let pes = Array.from(sidebarElement.getElementsByClassName(tagType))
+	
+		let tags = []
+		for(const pe of pes){
+			if(! pe){ // getElementByClassName が空の場合の処理
+				console.warn("parent element is null in array.")
+				continue
+			}
+	
+			const es = pe.getElementsByClassName("search-tag")
+			for(const e of es){
+				let tag = e.innerText
+				tags.push(tag)
+			}
+		}
+		return tags
+	}
+	let tagst = { 'characters':[], 'generals':[] };
+	tagst.characters = collectTagsFronTagType_("tag-type-4")
+	tagst.generals = collectTagsFronTagType_("tag-type-0")
+
+	//console.log("tags:")
+	//console.log(tags)
+	return tagst
+}
+
 // ******** Core ********
 
-{
 chrome.runtime.onInstalled.addListener(() => {
 
 	loadMyconf();
@@ -91,15 +165,10 @@ chrome.runtime.onMessage.addListener(
 
 function onSelectedTabs(tabs)
 {
-	let onResponsedCollectTags = (response) => {
-		if (chrome.runtime.lastError) { // manifest v2 (firefox) only need?
-			onError(chrome.runtime.lastError)
-			return
-		}
-		//console.log(response);
+	let onResponsedCollectTags = (collected_tagst) => {
 
-		const charas = response.collected_tagst.characters
-		const genes = response.collected_tagst.generals
+		const charas = collected_tagst.characters
+		const genes = collected_tagst.generals
 		let tagarrays = sortingTags(getMyconf().sortKind, genes)
 		tagarrays.unshift(charas)
 		console.log(tagarrays)
@@ -152,19 +221,23 @@ function onSelectedTabs(tabs)
 
 		// writeClipboard
 		// lamdbaキャプチャしたタブIDをそのまま使っているが動いてる。
-		chrome.tabs.sendMessage(tabs[0].id, {'dtcMessageTarget': 'content', 'dtcRequestKind': 'write_clipboard', 'text': s})
+		chrome.scripting.executeScript({
+			target: { tabId: tabs[0].id },
+			args: [s],
+			func: writeClipboard_,
+		});
 	}
 
-	// dirty switch
-	// chrome.tabs.sendMessage() promise is different.
-	if(typeof browser !== 'undefined'){
-		// firefox
-		chrome.tabs.sendMessage(tabs[0].id, {'dtcMessageTarget': 'content', 'dtcRequestKind': 'collect_tags'}, onResponsedCollectTags)
-	}else{
-		// chrome v3
-		let sending = chrome.tabs.sendMessage(tabs[0].id, {'dtcMessageTarget': 'content', 'dtcRequestKind': 'collect_tags'})
-		sending.then(onResponsedCollectTags).catch(onError)
-	}
+	chrome.scripting.executeScript(
+		{
+			target: { tabId: tabs[0].id },
+			func: collectTagst_,
+		},
+		(injectionResults) => {
+			for (const frameResult of injectionResults)
+				onResponsedCollectTags(frameResult.result);
+		}
+	);
 }
 
 function onError(error){
@@ -203,6 +276,7 @@ chrome.contextMenus.onClicked.addListener((item) => {
 })
 
 // ******** Ordering Structure Tags ********
+
 function sortingTags(sortKind, tags){
 
 	// ここで並べた順にソートとなる可能性はあるので、並び順は考えて置く
@@ -651,5 +725,4 @@ function sortingTags(sortKind, tags){
 	console.log('dsttags')
 	console.log(dsttags)
 	return dsttags
-}
 }
