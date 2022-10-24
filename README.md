@@ -22,12 +22,14 @@ diffusionのプロンプトに使うタグを集める作業を単純化して�
 
 # Install
 ## Chrome
+[Chrome Web Store][chrome]  
+または、  
 - zipファイルを[Download][Download]する。  
 - zipファイルを解凍。  
 - Chromeの拡張機能から「パッケージ化されていない拡張機能を読み込む」で解凍したディレクトリを指定する。  
 ## FireFox
-[Firefox Add-ons](https://addons.mozilla.org/ja/firefox/addon/dantagcopy/)  
-または、
+[Firefox Add-ons][firefox]  
+または、  
 - zipファイルを[Download][Download]する。  
 - FireFoxの拡張機能から「一時的なアドオンを読み込む」でダウンロードしたzipファイルを指定する。  
 
@@ -49,6 +51,8 @@ twitter: [@MNukazawa][twitter]
 
 Develop by Michinari.Nukazawa, in project "[daisy bell][pixiv_booth_project_daisy_bell]".  
 
+[chrome]: https://chrome.google.com/webstore/detail/dantagcopy/bnpbaljjkmiiglbgmbhkionpfkbnomlc
+[firefox]: https://addons.mozilla.org/ja/firefox/addon/dantagcopy/
 [danbooru]: https://danbooru.donmai.us/
 [download]: https://github.com/MichinariNukazawa/DanTagCopy_diffusion_tags_clipboard_webextension/releases/
 [pixiv_booth_project_daisy_bell]: https://daisy-bell.booth.pm/
