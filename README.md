@@ -2,17 +2,18 @@ DanTagCopy - diffusion tags collecter from danbooru to clipboard WebExtensions
 ----
 
 In danbooru page collect tags for diffusion prompt.  
-danboooruページ上から画像のタグを取得できます。  
+danboooruページ上のタグをクリップボードにコピーするブラウザ拡張です。  
   
-danbooruのページで見ている画像に付けられたタグを、クリップボードに集めるFireFoxアドオン,Chrome拡張です。  
+danbooruのページで見ている画像に付けられたタグを、整形してクリップボードに集めます。  
 diffusionのプロンプトに使うタグを集める作業を単純化して呪文探しを助けます。  
+FireFox,Chromeに対応しています。  
   
 
 <img src="docs/20221014_example.png" width="500">  
 
-プロンプトはStableDifussion, NovelAI向けに変換することができます。  
+タグはStableDifussion, NovelAIDiffusion向けに変換も行います。  
 
-<img src="docs/20221021_popup.png" width="200">  
+<img src="docs/20221024_popup.png" width="200">  
 
 # 使い方
 - 生成したい画像を思い浮かべながら[danbooru][danbooru]で画像を探す。
