@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "DanTagCopy",
-	"version": "1.9",
+	"version": "1.10",
 
 	"description": "Tags to clipboard, for diffusion, from danbooru.",
 	"homepage_url": "https://github.com/MichinariNukazawa/lina_dicto",
