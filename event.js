@@ -717,7 +717,7 @@ function sortingTags(sortKind, tags){
 	croths.sort((a, b) => {
 		const ai = crothWords.findIndex((elem) => { a.includes(elem) })
 		const bi = crothWords.findIndex((elem) => { b.includes(elem) })
-		console.log(a, ai, " - ", b , bi)
+		//console.log(a, ai, " - ", b , bi)
 		// findIndex は該当が無ければ-1を返す
 		//if(-1 === ai && -1 === bi){ return 0 }
 		if(-1 === ai){ return 1 }
