@@ -548,8 +548,8 @@ function sortingTags(sortKind, tags){
 		'collar',
 		'highleg',
 		'leotard',
-		'zipper'
-		'jacket'
+		'zipper',
+		'jacket',
 	]
 	// あくまで赤髪とかで取りこぼしがあった場合に拾うため程度のもの。
 	//（本当に色指定系を集めだすと、グラデなどの背景指定が入ってきてしまうため）
@@ -662,8 +662,8 @@ function sortingTags(sortKind, tags){
 		'cum', 'facial',
 		'heart',
 		'blush',
-		'alternate costume'
-		'unzip'
+		'alternate costume',
+		'unzip',
 	]
 
 	const isArrayIncludes = (target, arr) => arr.some(el => target.includes(el));
