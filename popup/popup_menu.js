@@ -47,18 +47,18 @@ window.addEventListener( 'load', function(e){
 
 		const myconf = request.myconf
 		console.log('received myconf', myconf)
-	
+
 		// 設定値をUIに反映
 		document.getElementById(myconf.targetKind).checked = true;
 		document.getElementById('escape_brackets').checked = myconf.escapeBrackets
 		document.getElementById(myconf.sortKind).checked = true
-	
+
 		// ** 読み込み成功したのでUIのロックを解除
 		document.getElementById('loading_error_message').style.display ="none"
 		let inputs = document.getElementsByTagName('input')
 		for( let i = 0; i < inputs.length; i++){
 			inputs[i].disabled = ''
-		}	
+		}
 	})
 	chrome.runtime.sendMessage({
 		 'dtcMessageTarget': 'service_worker',
