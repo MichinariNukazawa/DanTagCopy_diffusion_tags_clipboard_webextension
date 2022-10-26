@@ -279,14 +279,13 @@ chrome.contextMenus.onClicked.addListener((item) => {
 
 function sortingTags(sortKind, tags){
 
-	// ここで並べた順にソートとなる可能性はあるので、並び順は考えて置く
+	// ここで並べた順にソートしているので、順序は考慮すること
 	// https://danbooru.donmai.us/wiki_pages/tag_groups
 	const bodyWords = [
+		// 属性 狐耳少女('fox girl')、猫耳少女等
+		'girl', 'boy', 'kitsune',
 		// 尾
 		'tail', 'kyuubi', 'multiple_tails',
-		// 属性
-		// 狐耳少女('fox girl')、猫耳少女等
-		'girl', 'boy', 'kitsune',
 		// 目系
 		'eye', 'sclera', 'pupils',
 		// 耳
@@ -431,8 +430,6 @@ function sortingTags(sortKind, tags){
 		'shufa guan',
 		'visor cap',
 		'veil',
-		// Legware
-		'legwear',
 		// Neck,Neckware
 		'neck',
 		'long neck',
@@ -470,6 +467,8 @@ function sortingTags(sortKind, tags){
 		'sleeveless turtleneck',
 		'v-neck',
 		'wing collar',
+		// Legware
+		'legwear',
 		// sexual
 		'Lingerie',
 		'Babydoll',
@@ -538,9 +537,9 @@ function sortingTags(sortKind, tags){
 		'sunglasses',
 		'goggles',
 		'scouter',
-		//
+		// 手袋
 		'glove',
-		//
+		// 靴
 		'boots', 'footwear',
 		//
 		'chief',
@@ -704,6 +703,28 @@ function sortingTags(sortKind, tags){
 		}			
 	}
 
+	// Tag sort in group
+	// 定義したwordsの順に並び替え(indexをとって小さいほど前順へ)
+	bodys.sort((a, b) => {
+		const ai = bodyWords.findIndex((elem) => { return a.includes(elem) })
+		const bi = bodyWords.findIndex((elem) => { return b.includes(elem) })
+		//console.log(a, ai, " - ", b , bi)
+		// findIndex は該当が無ければ-1を返す
+		//if(-1 === ai && -1 === bi){ return 0 }
+		if(-1 === ai){ return 1 }
+		return ai - bi
+	})
+	croths.sort((a, b) => {
+		const ai = crothWords.findIndex((elem) => { a.includes(elem) })
+		const bi = crothWords.findIndex((elem) => { b.includes(elem) })
+		console.log(a, ai, " - ", b , bi)
+		// findIndex は該当が無ければ-1を返す
+		//if(-1 === ai && -1 === bi){ return 0 }
+		if(-1 === ai){ return 1 }
+		return ai - bi
+	})
+
+	// Group sort
 	let dsttags = []
 	switch(sortKind){
 		case 'character_sort':
