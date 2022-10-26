@@ -1,5 +1,5 @@
 {
-	"manifest_version": 3,
+	"manifest_version": 2,
 	"name": "DanTagCopy",
 	"version": "1.9",
 
@@ -11,18 +11,18 @@
 		"128": "icon128.png"
 	},
 
-	"action": {
+	"browser_action": {
 		"default_title": "DanTagCopy",
 		"default_icon": "icon128.png",
 		"default_popup": "popup/popup_menu.html"
 	},
 
 	"background": {
-		"service_worker": "event.js"
+		"scripts": ["event.js"],
+		"persistent": false
 	},
 
 	"permissions": [
-		"tabs",
 		"activeTab",
 		"clipboardWrite",
 		"notifications",
