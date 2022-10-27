@@ -5,6 +5,7 @@ let myconf = {
 	'ver': '1.0',
 	'targetKind': 'diffusion',
 	'escapeBrackets': true,
+	'withUrl': false,
 	'sortKind': 'character_sort'
 }
 
@@ -36,6 +37,12 @@ function saveTargetKind(targetKind){
 }
 function saveSortKind(sortKind){
 	myconf.sortKind = sortKind
+	chrome.storage.local.set(myconf, function() {
+		console.log('saved')
+	})
+}
+function saveWithUrl(withUrl){
+	myconf.withUrl = withUrl
 	chrome.storage.local.set(myconf, function() {
 		console.log('saved')
 	})
@@ -117,6 +124,9 @@ function collectTagst_()
 	tagst.characters = collectTagsFronTagType_("tag-type-4")
 	tagst.generals = collectTagsFronTagType_("tag-type-0")
 
+	// URL
+	tagst['url'] = window.location.href
+
 	//console.log("tags:")
 	//console.log(tags)
 	return tagst
@@ -150,6 +160,9 @@ chrome.runtime.onMessage.addListener(
 				break
 			case 'escape_brackets':
 				saveEscapeBrackets(request.escapeBrackets)
+				break
+			case 'with_url':
+				saveWithUrl(request.withUrl)
 				break
 			case 'get_my_conf':
 				const myconf = getMyconf()
@@ -217,6 +230,13 @@ function onSelectedTabs(tabs)
 			break
 		default:
 			showErrorMsg('BUG invalid:' + myconf.targetKind)
+		}
+
+		if(getMyconf().withUrl){
+			// 念のため、取り除き忘れ対策として重みを消しておく
+			// StableDiffusionの記法ではこれで重みゼロになる（はず。未確認）だが、
+			// NovelAIで重みゼロにする方法は不明。
+			s = `( ${collected_tagst.url} :0.0)\n` + s
 		}
 
 		// writeClipboard

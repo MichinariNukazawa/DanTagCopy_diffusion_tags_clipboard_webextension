@@ -11,7 +11,7 @@ window.addEventListener( 'load', function(e){
 			'dtcMessageTarget': 'service_worker',
 			'dtcMessageKind': 'target_kind',
 			'targetKind': targetKind
-	   })
+		})
 	}
 	document.getElementById('diffusion').addEventListener('change', onTargetKindRadioChanged);
 	document.getElementById('novelai').addEventListener('change', onTargetKindRadioChanged);
@@ -22,9 +22,18 @@ window.addEventListener( 'load', function(e){
 			'dtcMessageTarget': 'service_worker',
 			'dtcMessageKind': 'escape_brackets',
 			'escapeBrackets': document.getElementById('escape_brackets').checked
-	   })
+		})
 	});
-	
+
+	document.getElementById('with_url').addEventListener('change', (e) => {
+		console.debug("change", e.currentTarget.id);
+		chrome.runtime.sendMessage({
+			'dtcMessageTarget': 'service_worker',
+			'dtcMessageKind': 'with_url',
+			'withUrl': document.getElementById('with_url').checked
+		})
+	});
+
 	let onSortKindRadioChanged = function(e){
 		console.debug("change", e.currentTarget.id);
 		const sortKind = e.currentTarget.id;
@@ -32,7 +41,7 @@ window.addEventListener( 'load', function(e){
 			'dtcMessageTarget': 'service_worker',
 			'dtcMessageKind': 'sort_kind',
 			'sortKind': sortKind
-	   })
+		})
 	}
 	document.getElementById('character_sort').addEventListener('change', onSortKindRadioChanged);
 	document.getElementById('scene_sort').addEventListener('change', onSortKindRadioChanged);
@@ -51,6 +60,7 @@ window.addEventListener( 'load', function(e){
 		// 設定値をUIに反映
 		document.getElementById(myconf.targetKind).checked = true;
 		document.getElementById('escape_brackets').checked = myconf.escapeBrackets
+		document.getElementById('with_url').checked = myconf.withUrl
 		document.getElementById(myconf.sortKind).checked = true
 
 		// ** 読み込み成功したのでUIのロックを解除
