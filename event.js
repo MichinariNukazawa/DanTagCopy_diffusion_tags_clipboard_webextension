@@ -1,5 +1,7 @@
 'use strict';
 
+if(typeof chrome !== 'undefined'){ // #IFDEF UNIT_TEST
+
 // ******** Configure ********
 let myconf = {
 	'ver': '1.0',
@@ -182,7 +184,7 @@ function onSelectedTabs(tabs)
 
 		const charas = collected_tagst.characters
 		const genes = collected_tagst.generals
-		let tagarrays = sortingTags(getMyconf().sortKind, genes)
+		let tagarrays = DtcUtil.sortingTags(getMyconf().sortKind, genes)
 		tagarrays.unshift(charas)
 		console.log(tagarrays)
 
@@ -297,7 +299,14 @@ chrome.contextMenus.onClicked.addListener((item) => {
 
 // ******** Ordering Structure Tags ********
 
-function sortingTags(sortKind, tags){
+} // #IFDEF UNIT_TEST
+
+//module.exports = // depend test
+class DtcUtil{
+	static fun(){
+		return 'a'
+	}
+static sortingTags(sortKind, tags){
 
 	// ここで並べた順にソートしているので、順序は考慮すること
 	// https://danbooru.donmai.us/wiki_pages/tag_groups
@@ -305,7 +314,7 @@ function sortingTags(sortKind, tags){
 		// 属性 狐耳少女('fox girl')、猫耳少女等
 		'girl', 'boy', 'kitsune',
 		// 尾
-		'tail', 'kyuubi', 'multiple_tails',
+		'tail', 'kyuubi', 'multiple tails',
 		// 目系
 		'eye', 'sclera', 'pupils',
 		// 耳
@@ -360,9 +369,9 @@ function sortingTags(sortKind, tags){
 		'wing',
 		// 肌色
 		'skin',
-		'Tan',
-		'Tanlines',
-		'Sun tattoo',
+		'tan',
+		'tanlines',
+		'sun tattoo',
 	]
 	// body accessories
 	// hand, mouthはポージングが多い
@@ -377,6 +386,11 @@ function sortingTags(sortKind, tags){
 		'cuffs',
 		'garter', 'strap',
 		'garter straps',
+		'vest',
+		'tactical clothes',
+		'cloth',
+		'apron',
+		'petticoat',
 		// ドレス
 		'dress',
 		'tied dress',
@@ -389,6 +403,15 @@ function sortingTags(sortKind, tags){
 		'sundress',
 		//
 		'shirt',
+		//
+		'Bulletproof vest',
+		'Load bearing equipment',
+		'Load bearing vest',
+		'Plate carrier',
+		'Naked plate carrier',
+		'Bulletproof vest',
+		'Night vision device',
+		'Pouch', 'bag', // ちょっと違うが一緒に入れておく
 		// 髪飾り
 		// https://danbooru.donmai.us/wiki_pages/tag_group%3Ahair
 		'chopsticks',
@@ -569,6 +592,7 @@ function sortingTags(sortKind, tags){
 		'leotard',
 		'zipper',
 		'jacket',
+		'cloak', 'cape',
 	]
 	// あくまで赤髪とかで取りこぼしがあった場合に拾うため程度のもの。
 	//（本当に色指定系を集めだすと、グラデなどの背景指定が入ってきてしまうため）
@@ -590,14 +614,15 @@ function sortingTags(sortKind, tags){
 		'mouse', 'face', 'nape', 'shoulders', 'tongue',
 		'neck', 'collarbone', 'nape',
 		// 唇色以外の唇の動きを取り除く
-		'Cum on lips',
-		'Licking lips',
-		'Lip biting',
-		'Open mouth',
-		'Parted lips',
-		'Puckered lips',
-		'Pursed lips',
-		'Spread lips',
+		'cum on lips',
+		'licking lips',
+		'lip biting',
+		'open mouth',
+		'lips',
+		'parted lips',
+		'puckered lips',
+		'pursed lips',
+		'spread lips',
 		// ** 服飾系
 		// ドレス（エフェクト的なタグが多い）
 		'dress flip',
@@ -683,15 +708,63 @@ function sortingTags(sortKind, tags){
 		'blush',
 		'alternate costume',
 		'unzip',
+		'waving', // 手をふる
+		'background', // 背景色・背景グラデ等
+		'flying sweatdrops',
+		// 構図系
+		'cowboy shot',
+		'shot',
 	]
 
-	const isArrayIncludes = (target, arr) => arr.some(el => target.includes(el));
-	const isArrayEquals = (target, arr) => arr.some(el => target === el);
+	const isArrayIncludes = (target, arr) => arr.some(el => target.toLowerCase().includes(el.toLowerCase()));
+	const isArrayEquals = (target, arr) => arr.some(el => target.toLowerCase() === el.toLowerCase());
+	const isArrayWordEquals = (target, arr) => arr.some((el) => {
+		const keyword = el.toLowerCase()
+		const words = target.toLowerCase().split(' ')
+		return isArrayEquals(keyword, words)
+			|| isArrayEquals(keyword + 's', words)
+			|| isArrayEquals(keyword + 'es', words) // 雑な複数形対応
+	});
 
 	let bodys = []
 	let croths = []
 	let colors = []
 	let others = []
+	// 完全一致
+	let tmps = []
+	for( let i = 0; i < tags.length; i++){
+		const tag = tags[i]
+		if(isArrayEquals(tag, otherWords)){
+			others.push(tag)
+		}else if(isArrayEquals(tag, bodyWords)){
+			bodys.push(tag)
+		}else if(isArrayEquals(tag, crothWords)){
+			croths.push(tag)
+		}else if(isArrayEquals(tag, colorWords)){
+			colors.push(tag)
+		}else{
+			tmps.push(tag)
+		}
+	}
+	tags = tmps
+	// 単語一致
+	tmps = []
+	for( let i = 0; i < tags.length; i++){
+		const tag = tags[i]
+		if(isArrayWordEquals(tag, otherWords)){
+			others.push(tag)
+		}else if(isArrayWordEquals(tag, bodyWords)){
+			bodys.push(tag)
+		}else if(isArrayWordEquals(tag, crothWords)){
+			croths.push(tag)
+		}else if(isArrayWordEquals(tag, colorWords)){
+			colors.push(tag)
+		}else{
+			tmps.push(tag)
+		}
+	}
+	tags = tmps
+	// 部分一致
 	let tothers = []
 	for( let i = 0; i < tags.length; i++){
 		const tag = tags[i]
@@ -705,7 +778,7 @@ function sortingTags(sortKind, tags){
 			colors.push(tag)
 		}else{
 			tothers.push(tag)
-		}			
+		}
 	}
 	// その他に分類されたタグから、完全一致するタグを移動しなおして末尾に付ける
 	for( let i = 0; i < tothers.length; i++){
@@ -720,7 +793,7 @@ function sortingTags(sortKind, tags){
 			colors.push(tag)
 		}else{
 			others.push(tag)
-		}			
+		}
 	}
 
 	// Tag sort in group
@@ -772,3 +845,5 @@ function sortingTags(sortKind, tags){
 	console.log(dsttags)
 	return dsttags
 }
+}
+
