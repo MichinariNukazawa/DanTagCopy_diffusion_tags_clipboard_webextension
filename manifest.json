@@ -1,10 +1,10 @@
 {
 	"manifest_version": 3,
 	"name": "DanTagCopy",
-	"version": "1.12",
+	"version": "1.13",
 
-	"description": "Tags to clipboard, for diffusion, from danbooru.",
-	"homepage_url": "https://github.com/MichinariNukazawa/lina_dicto",
+	"description": "Tags to clipboard, for diffusion on webpages.",
+	"homepage_url": "https://github.com/MichinariNukazawa/DanTagCopy_diffusion_tags_clipboard_webextension",
 	"author": "michinari.nukazawa@gmail.com",
 
 	"icons": {
@@ -22,7 +22,6 @@
 	},
 
 	"permissions": [
-		"tabs",
 		"activeTab",
 		"clipboardWrite",
 		"notifications",

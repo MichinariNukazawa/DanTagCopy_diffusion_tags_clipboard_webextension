@@ -14,5 +14,7 @@ it ("convert", function() {
 	assert(2 === DtcUtil.sortingTags('character_sort', ['black footwear', 'torn legwear'])[1].length)
 	assert(2 === DtcUtil.sortingTags('character_sort', ['vest', 'black vest'])[1].length)
 	assert(2 === DtcUtil.sortingTags('character_sort', ['black', 'red', 'black background', 'background'])[3].length)
+	assert(1 === DtcUtil.sortingTags('character_sort', ['waist apron'])[2].length)
+	assert(1 === DtcUtil.sortingTags('character_sort', ['earpiece'])[2].length)
 });
 
