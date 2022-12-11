@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "DanTagCopy",
-	"version": "1.13",
+	"version": "1.14",
 
 	"description": "Tags to clipboard, for diffusion on webpages.",
 	"homepage_url": "https://github.com/MichinariNukazawa/DanTagCopy_diffusion_tags_clipboard_webextension",
