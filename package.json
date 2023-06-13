@@ -1,34 +1,28 @@
 {
-  "name": "diffusion_tags_clipboard_webextension",
+  "name": "dantagcopy_diffusion_tags_clipboard_webextension",
   "version": "1.0.0",
-  "description": "DanTagCopy - diffusion tags collecter from danbooru to clipboard WebExtensions ----",
-  "main": "content.js",
-  "directories": {
-    "doc": "docs",
-    "test": "test"
-  },
   "scripts": {
+    "watch": "node scripts/build.js --watch",
+    "archive-chrome": "node scripts/archive.js dist.chrome/ dantagcopy_webextensions_chrome.zip",
+    "archive-firefox": "node scripts/archive.js dist.firefox/ dantagcopy_webextensions_firefox.zip",
+    "archive-src": "git archive HEAD --output=dantagcopy_webextensions_src.zip",
+    "release": "node scripts/build.js && npm run archive-chrome && npm run archive-firefox && npm run archive-src",
+    "start:firefox": "TMPDIR=tmp/ web-ext run --source-dir dist.firefox/ --arg=\"--new-tab=about:debugging#/runtime/this-firefox\" --arg=\"--new-tab=https://danbooru.donmai.us/posts/4930919\"",
+    "start:chromium": "chromium --temp-profile --load-extension=dist.chrome/ https://danbooru.donmai.us/posts/4930919",
     "test": "mocha --require intelli-espower-loader",
     "testtotest": "mocha test/mocha.js"
   },
   "jest": {
     "verbose": true
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MichinariNukazawa/DanTagCopy_diffusion_tags_clipboard_webextension.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "Public Domain",
-  "bugs": {
-    "url": "https://github.com/MichinariNukazawa/DanTagCopy_diffusion_tags_clipboard_webextension/issues"
-  },
-  "homepage": "https://github.com/MichinariNukazawa/DanTagCopy_diffusion_tags_clipboard_webextension#readme",
   "devDependencies": {
+    "archiver": "^5.3.1",
+    "chokidar": "^3.5.3",
+    "fs-extra": "^11.1.1",
     "intelli-espower-loader": "^1.1.0",
-    "jest": "^29.2.2",
-    "mocha": "^10.1.0",
-    "power-assert": "^1.6.1"
+    "jest": "^29.5.0",
+    "mocha": "^10.2.0",
+    "power-assert": "^1.6.1",
+    "web-ext": "^7.6.2"
   }
 }

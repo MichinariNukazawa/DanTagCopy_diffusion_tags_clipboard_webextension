@@ -1,0 +1,7 @@
+{
+    // Explorer で非表示にするもの
+    "files.exclude": {
+        "dist*": true,
+        "**/node_modules": true
+    },
+}

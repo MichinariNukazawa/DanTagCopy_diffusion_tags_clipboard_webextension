@@ -115,8 +115,19 @@ function collectTagst_()
 			}
 	
 			const es = pe.getElementsByClassName("search-tag")
-			for(const e of es){
-				let tag = e.innerText
+			for(const element of es){
+			    // dantagjaによる翻訳elementの挿入への対処としてtext部分だけを取り出す
+			    let tag
+			    for (let i = 0; i < element.childNodes.length; i++){
+                    if (element.childNodes[i].nodeType === Node.TEXT_NODE){
+                        tag = element.childNodes[i].textContent;
+                    }
+				}
+				if(!tag){
+				    console.warn('tag not detected', element)
+				    tags.push(element.innerText)
+				    break;
+				}
 				tags.push(tag)
 			}
 		}

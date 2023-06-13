@@ -1,19 +1,19 @@
 {
 	"manifest_version": 3,
 	"name": "DanTagCopy",
-	"version": "1.14",
+	"version": "1.15",
 
 	"description": "Tags to clipboard, for diffusion on webpages.",
 	"homepage_url": "https://github.com/MichinariNukazawa/DanTagCopy_diffusion_tags_clipboard_webextension",
 	"author": "michinari.nukazawa@gmail.com",
 
 	"icons": {
-		"128": "icon128.png"
+		"128": "icons/icon128.png"
 	},
 
 	"action": {
 		"default_title": "DanTagCopy",
-		"default_icon": "icon128.png",
+		"default_icon": "icons/icon128.png",
 		"default_popup": "popup/popup_menu.html"
 	},
 

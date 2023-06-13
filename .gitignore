@@ -2,6 +2,7 @@
 .*
 !.gitkeep
 !.gitignore
+!.vscode/
 tags
 
 *~
@@ -14,25 +15,24 @@ tags
 *~
 
 # tmporary
-tmp/
-temp/
-gabage/
-work/
-log/
-object/
+tmp*/
+temp*/
+gabage*/
+work*/
+log*/
+object*/
 
 # doxygen
 doxygen/
 
 *.txt
 
-*.mp4
+#
 *.zip
+dist*
 
 #
 node_modules/
 package-lock.json
 
-#
-output*
-
+node_modules
