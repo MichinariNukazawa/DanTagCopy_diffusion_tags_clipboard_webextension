@@ -3,7 +3,7 @@
 if(typeof chrome !== 'undefined'){ // #IFDEF UNIT_TEST
 
 // ******** Configure ********
-let myconf = {
+const myconfDefault = {
 	'ver': '1.0',
 	'targetKind': 'diffusion',
 	'escapeBrackets': true,
@@ -11,48 +11,19 @@ let myconf = {
 	'sortKind': 'character_sort'
 }
 
-function getMyconf(){
-	return myconf;
-}
-function loadMyconf(){
+function loadMyconf(func){
 	chrome.storage.local.get(function(items) {
 		console.log('loaded', items)
 		if(Object.keys(items).length === 0){
+			// 新規設定項目を追加した後の起動では、読み込んだ設定Objに必要項目がないので、初期値で埋める
 			console.log('nothing save, use default.')
-			return
+			chrome.storage.local.set(myconfDefault)
+			//const promise = chrome.storage.local.set(myconfDefault)
+			//promise.then(() => {console.log('saved')}).catch((e) => {console.warn('save error', e)});
 		}
-		if(! items.hasOwnProperty('targetKind')){
-			console.error('invalid data, use default.')
-			return
-		}
-		console.log(items.targetKind)
-		myconf = Object.assign(myconf, items)
-		// 新規設定項目を追加した後の起動では、読み込んだ設定Objに必要項目がないので、初期値で埋める
-		console.log('merged', myconf)
-	})
-}
-function saveTargetKind(targetKind){
-	myconf.targetKind = targetKind
-	chrome.storage.local.set(myconf, function() {
-		console.log('saved')
-	})
-}
-function saveSortKind(sortKind){
-	myconf.sortKind = sortKind
-	chrome.storage.local.set(myconf, function() {
-		console.log('saved')
-	})
-}
-function saveWithUrl(withUrl){
-	myconf.withUrl = withUrl
-	chrome.storage.local.set(myconf, function() {
-		console.log('saved')
-	})
-}
-function saveEscapeBrackets(escapeBrackets){
-	myconf.escapeBrackets = escapeBrackets
-	chrome.storage.local.set(myconf, function() {
-		console.log('saved')
+		const myconf = Object.assign(myconfDefault, items)
+
+		func(myconf)
 	})
 }
 
@@ -148,8 +119,9 @@ function collectTagst_()
 // ******** Core ********
 
 chrome.runtime.onInstalled.addListener(() => {
+	console.log('onInstalled');
 
-	loadMyconf();
+	loadMyconf((t) => {});
 
 	const parent = chrome.contextMenus.create({
 		id: 'diffusion',
@@ -158,106 +130,77 @@ chrome.runtime.onInstalled.addListener(() => {
 	});
 });
 
-chrome.runtime.onMessage.addListener(
-	function(request, sender, sendResponse) {
-		if('service_worker' !== request.dtcMessageTarget){
-			console.log('through receive message not target.', request.dtcMessageTarget)
-			return
-		}
-		switch(request.dtcMessageKind){
-			case 'target_kind':
-				saveTargetKind(request.targetKind)
-				break
-			case 'sort_kind':
-				saveSortKind(request.sortKind)
-				break
-			case 'escape_brackets':
-				saveEscapeBrackets(request.escapeBrackets)
-				break
-			case 'with_url':
-				saveWithUrl(request.withUrl)
-				break
-			case 'get_my_conf':
-				const myconf = getMyconf()
-				chrome.runtime.sendMessage({
-					'dtcMessageTarget': 'popup',
-					'myconf': myconf
-				});
-				break
-		}
-		// 本当はsave完了のコールバックを待って応答を返したいが
-	}
-);
-
 function onSelectedTabs(tabs)
 {
 	let onResponsedCollectTags = (collected_tagst) => {
 
-		const charas = collected_tagst.characters
-		const genes = collected_tagst.generals
-		let tagarrays = DtcUtil.sortingTags(getMyconf().sortKind, genes)
-		tagarrays.unshift(charas)
-		console.log(tagarrays)
+		loadMyconf((myconf) => {
+			const charas = collected_tagst.characters
+			const genes = collected_tagst.generals
+			let tagarrays = DtcUtil.sortingTags(myconf.sortKind, genes)
+			tagarrays.unshift(charas)
+			console.log(tagarrays)
 
-		if(getMyconf().escapeBrackets){
-			tagarrays.forEach((tagarr, index) => {
-				const newtagarr = tagarr.map((tag) => {
-					// プロンプトでは括弧は強弱指定となるためタグの括弧をエスケープする
-					// '{}'は(おそらく)タグに含まれないのでしていない
-					// '[]'もいまのところ見かけていないが念のため
-					tag = tag.replaceAll('(', '\\(')
-					tag = tag.replaceAll(')', '\\)')
-					tag = tag.replaceAll('[', '\\[')
-					tag = tag.replaceAll(']', '\\]')
-					return tag
+			if(myconf.escapeBrackets){
+				tagarrays.forEach((tagarr, index) => {
+					const newtagarr = tagarr.map((tag) => {
+						// プロンプトでは括弧は強弱指定となるためタグの括弧をエスケープする
+						// '{}'は(おそらく)タグに含まれないのでしていない
+						// '[]'もいまのところ見かけていないが念のため
+						tag = tag.replaceAll('(', '\\(')
+						tag = tag.replaceAll(')', '\\)')
+						tag = tag.replaceAll('[', '\\[')
+						tag = tag.replaceAll(']', '\\]')
+						return tag
+					})
+					tagarrays[index] = newtagarr
 				})
-				tagarrays[index] = newtagarr
-			})
-		}
+			}
 
-		let s = ''
-		switch(myconf.targetKind){
-		case 'diffusion':
-		{
-			tagarrays = tagarrays.map((tagarr) => {
-				return tagarr.map((tag) => {
-					return tag.replaceAll(' ', '_')
+			let s = ''
+			switch(myconf.targetKind){
+			case 'diffusion':
+			{
+				tagarrays = tagarrays.map((tagarr) => {
+					return tagarr.map((tag) => {
+						return tag.replaceAll(' ', '_')
+					})
 				})
-			})
 
-			const ss = tagarrays.map((tagarr) => {
-				return tagarr.join(' ')
-			})
-			// Tagグループ間は２つ開ける
-			// 基本的にはデバッグのための挙動
-			// プロンプトに空白を増やしても画像生成に副作用はないはず
-			s = ss.join('  ')
-		}
-			break
-		case 'novelai':
-			let ss = tagarrays.map((tagarr) => {
-				return tagarr.join(', ')
-			})
-			ss = ss.filter((tarray) => 0 < tarray.length)
-			s = ss.join(',  ')
-			break
-		default:
-			showErrorMsg('BUG invalid:' + myconf.targetKind)
-		}
+				const ss = tagarrays.map((tagarr) => {
+					return tagarr.join(' ')
+				})
+				// Tagグループ間は２つ開ける
+				// 基本的にはデバッグのための挙動
+				// プロンプトに空白を増やしても画像生成に副作用はないはず
+				s = ss.join('  ')
+			}
+				break
+			case 'novelai':
+				let ss = tagarrays.map((tagarr) => {
+					return tagarr.join(', ')
+				})
+				ss = ss.filter((tarray) => 0 < tarray.length)
+				s = ss.join(',  ')
+				break
+			default:
+				showErrorMsg('BUG invalid:' + myconf.targetKind)
+			}
 
-		if(getMyconf().withUrl){
-			// 念のため、取り除き忘れ対策として重みを消しておく
-			// StableDiffusionの記法ではこれで重みゼロになる（はず。未確認）だが、
-			// NovelAIで重みゼロにする方法は不明。
-			s = `( ${collected_tagst.url} :0.0)\n` + s
-		}
+			if(myconf.withUrl){
+				// 念のため、取り除き忘れ対策として重みを消しておく
+				// StableDiffusionの記法ではこれで重みゼロになる（はず。未確認）だが、
+				// NovelAIで重みゼロにする方法は不明。
+				s = `( ${collected_tagst.url} :0.0)\n` + s
+			}
 
-		// writeClipboard
-		// lamdbaキャプチャしたタブIDをそのまま使っているが動いてる。
-		chrome.scripting.executeScript({
-			target: { tabId: tabs[0].id },
-			args: [s],
-			func: writeClipboard_,
+			// writeClipboard
+			// lamdbaキャプチャしたタブIDをそのまま使っているが動いてる。
+			chrome.scripting.executeScript({
+				target: { tabId: tabs[0].id },
+				args: [s],
+				func: writeClipboard_,
+			});
 		});
 	}
 
@@ -858,3 +801,4 @@ static sortingTags(sortKind, tags){
 }
 }
 
+console.log('loaded');
