@@ -38,6 +38,7 @@ FireFox,Chromeに対応しています。
 # License
 Public Domain  
 
+
 # TODO
 - タグの自動カスタム
   - 自動タグソート(どのような順番に？)
@@ -45,6 +46,22 @@ Public Domain
 低優先度・要検討
 - 表記設定切り替え時にクリップボードへ反映  
 - ブラウザシークレットモード対応  
+
+
+# Develop
+## Setup
+Ubuntu環境で以下のコマンドを実行。
+```
+sudo apt install npm
+npm install
+```
+
+## Build
+以下のコマンドを実行。
+```
+npm run release
+```
+
 
 # Contact
 mail: [michinari.nukazawa@gmail.com][mailto]  
