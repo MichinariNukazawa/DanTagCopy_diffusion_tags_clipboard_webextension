@@ -17,6 +17,13 @@
 		"default_popup": "popup/popup_menu.html"
 	},
 
+	"content_scripts": [
+	  {
+		"matches": ["<all_urls>"],
+		"js": ["./content.js"]
+	  }
+	],
+
 	"background": {
 		"service_worker": "event.js"
 	},

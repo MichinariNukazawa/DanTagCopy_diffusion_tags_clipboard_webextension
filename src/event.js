@@ -1,7 +1,5 @@
 'use strict';
 
-if(typeof chrome !== 'undefined'){ // #IFDEF UNIT_TEST
-
 // ******** Configure ********
 const myconfDefault = {
 	'ver': '1.0',
@@ -27,194 +25,7 @@ function loadMyconf(func){
 	})
 }
 
-// ******** content script ********
-
-function writeClipboard_(text)
-{
-	console.log('call', text)
-
-	// writeText() is good api implement,
-	// but dont working in chrome (cause V2 manifest ?).
-	navigator.clipboard.writeText(text)
-	/*
-	navigator.clipboard.writeText(s).then(() => {
-		// clipboard successfully set
-		console.log('success.')
-	}).catch( (e) => {
-		// clipboard write failed
-		console.warn('failed.', e)
-		onError(e)
-	});
-	*/
-
-/*
-	// Fallback clipboard copy.
-	// This is not working in V3 background.
-	// (In page content scripting is successable.)
-	const input = document.createElement('input');
-	document.body.appendChild(input);
-	input.value = text;
-	input.focus();
-	input.select();
-	const result = document.execCommand('copy');
-	if (result === 'unsuccessful') {
-		console.error('Failed to copy text.');
-	}
-*/
-}
-
-function collectTagst_()
-{
-	let sidebarElement = document.getElementById("sidebar")
-	if(! sidebarElement){
-		console.warn('sidebar element not exist.')
-		return []
-	}
-
-	// character-tag-list
-	// general-tag-list
-	// collect tags, `posts?tags=*` 的なタグ該当画像一覧ページでの収集に対応する
-
-	const collectTagsFronTagType_ = (tagType) => {
-		let pes = Array.from(sidebarElement.getElementsByClassName(tagType))
-	
-		let tags = []
-		for(const pe of pes){
-			if(! pe){ // getElementByClassName が空の場合の処理
-				console.warn("parent element is null in array.")
-				continue
-			}
-	
-			const es = pe.getElementsByClassName("search-tag")
-			for(const element of es){
-			    // dantagjaによる翻訳elementの挿入への対処としてtext部分だけを取り出す
-			    let tag
-			    for (let i = 0; i < element.childNodes.length; i++){
-                    if (element.childNodes[i].nodeType === Node.TEXT_NODE){
-                        tag = element.childNodes[i].textContent;
-                    }
-				}
-				if(!tag){
-				    console.warn('tag not detected', element)
-				    tags.push(element.innerText)
-				    break;
-				}
-				tags.push(tag)
-			}
-		}
-		return tags
-	}
-	let tagst = { 'characters':[], 'generals':[] };
-	tagst.characters = collectTagsFronTagType_("tag-type-4")
-	tagst.generals = collectTagsFronTagType_("tag-type-0")
-
-	// URL
-	tagst['url'] = window.location.href
-
-	//console.log("tags:")
-	//console.log(tags)
-	return tagst
-}
-
-// ******** Core ********
-
-chrome.runtime.onInstalled.addListener(() => {
-	console.log('onInstalled');
-
-	loadMyconf((t) => {});
-
-	const parent = chrome.contextMenus.create({
-		id: 'diffusion',
-		title: 'DanTagCopy:tags to clipboard',
-		contexts: ["all"]
-	});
-});
-
-function onSelectedTabs(tabs)
-{
-	let onResponsedCollectTags = (collected_tagst) => {
-
-		loadMyconf((myconf) => {
-			const charas = collected_tagst.characters
-			const genes = collected_tagst.generals
-			let tagarrays = DtcUtil.sortingTags(myconf.sortKind, genes)
-			tagarrays.unshift(charas)
-			console.log(tagarrays)
-
-			if(myconf.escapeBrackets){
-				tagarrays.forEach((tagarr, index) => {
-					const newtagarr = tagarr.map((tag) => {
-						// プロンプトでは括弧は強弱指定となるためタグの括弧をエスケープする
-						// '{}'は(おそらく)タグに含まれないのでしていない
-						// '[]'もいまのところ見かけていないが念のため
-						tag = tag.replaceAll('(', '\\(')
-						tag = tag.replaceAll(')', '\\)')
-						tag = tag.replaceAll('[', '\\[')
-						tag = tag.replaceAll(']', '\\]')
-						return tag
-					})
-					tagarrays[index] = newtagarr
-				})
-			}
-
-			let s = ''
-			switch(myconf.targetKind){
-			case 'diffusion':
-			{
-				tagarrays = tagarrays.map((tagarr) => {
-					return tagarr.map((tag) => {
-						return tag.replaceAll(' ', '_')
-					})
-				})
-
-				const ss = tagarrays.map((tagarr) => {
-					return tagarr.join(' ')
-				})
-				// Tagグループ間は２つ開ける
-				// 基本的にはデバッグのための挙動
-				// プロンプトに空白を増やしても画像生成に副作用はないはず
-				s = ss.join('  ')
-			}
-				break
-			case 'novelai':
-				let ss = tagarrays.map((tagarr) => {
-					return tagarr.join(', ')
-				})
-				ss = ss.filter((tarray) => 0 < tarray.length)
-				s = ss.join(',  ')
-				break
-			default:
-				showErrorMsg('BUG invalid:' + myconf.targetKind)
-			}
-
-			if(myconf.withUrl){
-				// 念のため、取り除き忘れ対策として重みを消しておく
-				// StableDiffusionの記法ではこれで重みゼロになる（はず。未確認）だが、
-				// NovelAIで重みゼロにする方法は不明。
-				s = `( ${collected_tagst.url} :0.0)\n` + s
-			}
-
-			// writeClipboard
-			// lamdbaキャプチャしたタブIDをそのまま使っているが動いてる。
-			chrome.scripting.executeScript({
-				target: { tabId: tabs[0].id },
-				args: [s],
-				func: writeClipboard_,
-			});
-		});
-	}
-
-	chrome.scripting.executeScript(
-		{
-			target: { tabId: tabs[0].id },
-			func: collectTagst_,
-		},
-		(injectionResults) => {
-			for (const frameResult of injectionResults)
-				onResponsedCollectTags(frameResult.result);
-		}
-	);
-}
+// ******** Genaral ********
 
 function onError(error){
 	console.error('Error:', error);
@@ -235,25 +46,131 @@ function showErrorMsg(msg){
 	);
 }
 
+// ******** Core ********
+
+chrome.runtime.onInstalled.addListener(() => {
+	console.log('onInstalled');
+
+	loadMyconf((t) => {});
+
+	const parent = chrome.contextMenus.create({
+		id: 'diffusion',
+		title: 'DanTagCopy:tags to clipboard',
+		contexts: ["all"]
+	});
+});
+
 chrome.contextMenus.onClicked.addListener((item) => {
 	console.log('onClicked MenuItem')
 
+	const onSelectedTabs = (tabs) => {
+		loadMyconf((myconf) => {
+			const sending = chrome.tabs.sendMessage(
+					tabs[0].id,
+					{
+						'kind': 'request_collect_tags',
+						'configure': myconf,
+						'srcTabId': tabs[0].id
+					}
+			);
+			sending.then(()=>{console.log('sended')}).catch((e) => {console.warn('send error', e)});
+		});
+	}
+	
 	// dirty switch
 	// chrome.tabs.query() in firefox not working (not callback).
 	if(typeof browser !== 'undefined'){
-		console.log(typeof browser)
-		console.log(browser)
 		// firefox
-		browser.tabs.query({active: true, lastFocusedWindow:true}).then(onSelectedTabs, onError);
+		let querying = browser.tabs.query({active: true, lastFocusedWindow:true})
+		querying.then(onSelectedTabs).catch(onError);
 	}else{
+		// chrome
 		let querying = chrome.tabs.query({active: true, lastFocusedWindow:true})
 		querying.then(onSelectedTabs).catch(onError);
 	}
-})
+});
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+	switch(request.kind){
+	case 'response_collect_tags':
+		const text = onResponsedCollectTags(request.configure, request.collected_tag_struct);
+		chrome.tabs.sendMessage(
+			request.srcTabId,
+			{
+				'kind': 'request_write_clipboard',
+				'text': text,
+			}
+		);
+		break;
+	default:
+		console.error('invalid', request);
+	}
+});
 
 // ******** Ordering Structure Tags ********
 
-} // #IFDEF UNIT_TEST
+const onResponsedCollectTags = (myconf, collected_tag_struct) => {
+	const charas = collected_tag_struct.characters
+	const genes = collected_tag_struct.generals
+	let tagarrays = DtcUtil.sortingTags(myconf.sortKind, genes)
+	tagarrays.unshift(charas)
+	console.log(tagarrays)
+
+	if(myconf.escapeBrackets){
+		tagarrays.forEach((tagarr, index) => {
+			const newtagarr = tagarr.map((tag) => {
+				// プロンプトでは括弧は強弱指定となるためタグの括弧をエスケープする
+				// '{}'は(おそらく)タグに含まれないのでしていない
+				// '[]'もいまのところ見かけていないが念のため
+				tag = tag.replaceAll('(', '\\(')
+				tag = tag.replaceAll(')', '\\)')
+				tag = tag.replaceAll('[', '\\[')
+				tag = tag.replaceAll(']', '\\]')
+				return tag
+			})
+			tagarrays[index] = newtagarr
+		})
+	}
+
+	let s = ''
+	switch(myconf.targetKind){
+	case 'diffusion':
+	{
+		tagarrays = tagarrays.map((tagarr) => {
+			return tagarr.map((tag) => {
+				return tag.replaceAll(' ', '_')
+			})
+		})
+
+		const ss = tagarrays.map((tagarr) => {
+			return tagarr.join(' ')
+		})
+		// Tagグループ間は２つ開ける
+		// 基本的にはデバッグのための挙動
+		// プロンプトに空白を増やしても画像生成に副作用はないはず
+		s = ss.join('  ')
+	}
+		break
+	case 'novelai':
+		let ss = tagarrays.map((tagarr) => {
+			return tagarr.join(', ')
+		})
+		ss = ss.filter((tarray) => 0 < tarray.length)
+		s = ss.join(',  ')
+		break
+	default:
+		showErrorMsg('BUG invalid:' + myconf.targetKind)
+	}
+
+	if(myconf.withUrl){
+		// 念のため、取り除き忘れ対策として重みを消しておく
+		// StableDiffusionの記法ではこれで重みゼロになる（はず。未確認）だが、
+		// NovelAIで重みゼロにする方法は不明。
+		s = `( ${collected_tag_struct.url} :0.0)\n` + s
+	}
+
+	return s;
+}
 
 //module.exports = // depend test
 class DtcUtil{

@@ -11,7 +11,8 @@ async function copyFiles(srcDir, distDir) {
   try {
     await fs.emptyDir(distDir);
     const files = [
-      'icons/icon128.png', 'event.js',
+      'icons/icon128.png',
+      'event.js', 'content.js',
       'popup/popup_menu.html', 'popup/popup_menu.js', 'popup/style.css',
     ];
     for(const file of files){
