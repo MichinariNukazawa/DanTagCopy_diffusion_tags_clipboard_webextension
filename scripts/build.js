@@ -6,19 +6,32 @@ const srcDir = path.join(__dirname, '..', 'src');
 const distDirFirefox = path.join(__dirname, '..', 'dist.firefox');
 const distDirChrome = path.join(__dirname, '..', 'dist.chrome');
 
+const { exec } = require('child_process');
+
+function runNpmCommand(target) {
+  exec(`npm run ${target}`, (error, stdout, stderr) => {
+    if (error) {
+      console.error('Error running Browserify:', error);
+    } else {
+      console.log('Browserify completed');
+    }
+  });
+}
+
 // srcディレクトリの内容をdistディレクトリにコピーする関数
 async function copyFiles(srcDir, distDir) {
   try {
     await fs.emptyDir(distDir);
     const files = [
       'icons/icon128.png',
-      'event.js', 'content.js',
+      'content.js',
       'popup/popup_menu.html', 'popup/popup_menu.js', 'popup/style.css',
     ];
     for(const file of files){
       await fs.copy(path.join(srcDir, file), path.join(distDir, file));
     }
     console.log(`Files copied to ${distDir}`);
+    runNpmCommand('browserify:event');
   } catch (err) {
     console.error('Error copying files:', err);
   }

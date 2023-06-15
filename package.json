@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "scripts": {
     "watch": "node scripts/build.js --watch",
+    "browserify:event": "browserify --debug src/event.js -o dist.chrome/event.js && cp dist.chrome/event.js dist.firefox/",
     "archive-chrome": "node scripts/archive.js dist.chrome/ dantagcopy_webextensions_chrome.zip",
     "archive-firefox": "node scripts/archive.js dist.firefox/ dantagcopy_webextensions_firefox.zip",
     "archive-src": "git archive HEAD --output=dantagcopy_webextensions_src.zip",
     "release": "node scripts/build.js && npm run archive-chrome && npm run archive-firefox && npm run archive-src",
     "start:firefox": "TMPDIR=tmp/ web-ext run --source-dir dist.firefox/ --arg=\"--new-tab=about:debugging#/runtime/this-firefox\" --arg=\"--new-tab=https://danbooru.donmai.us/posts/4930919\"",
     "start:chromium": "chromium --temp-profile --load-extension=dist.chrome/ https://danbooru.donmai.us/posts/4930919",
-    "test": "mocha --require intelli-espower-loader",
+    "test": "mocha",
     "testtotest": "mocha test/mocha.js"
   },
   "jest": {
@@ -19,10 +20,11 @@
     "archiver": "^5.3.1",
     "chokidar": "^3.5.3",
     "fs-extra": "^11.1.1",
-    "intelli-espower-loader": "^1.1.0",
-    "jest": "^29.5.0",
     "mocha": "^10.2.0",
     "power-assert": "^1.6.1",
     "web-ext": "^7.6.2"
+  },
+  "dependencies": {
+    "browserify": "^17.0.0"
   }
 }
