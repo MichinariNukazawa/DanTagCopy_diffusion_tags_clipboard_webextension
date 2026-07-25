@@ -1,7 +1,7 @@
 'use strict';
 
-class DtUtil{
-	static sortingTags(sortKind, tags){
+class DtUtil {
+	static sortingTags(sortKind, tags) {
 		// ここで並べた順にソートしているので、順序は考慮すること
 		// https://danbooru.donmai.us/wiki_pages/tag_groups
 		const bodyWords = [
@@ -30,10 +30,10 @@ class DtUtil{
 			'colored tips',
 			// ひげ(髪グループのFacial hair)
 			// https://danbooru.donmai.us/wiki_pages/tag_group%3Ahair
-			'beard', 'goatee', 'mustache','stubble',
+			'beard', 'goatee', 'mustache', 'stubble',
 			// 胸（サイズ指定として）
 			// nippleは見える構図系が多いようなので入れていない
-			'breast','chest',
+			'breast', 'chest',
 			// 男性胸
 			'pec', 'pectoral',
 			// お尻（サイズ指定として）
@@ -426,66 +426,66 @@ class DtUtil{
 		let others = []
 		// 完全一致
 		let tmps = []
-		for( let i = 0; i < tags.length; i++){
+		for (let i = 0; i < tags.length; i++) {
 			const tag = tags[i]
-			if(isArrayEquals(tag, otherWords)){
+			if (isArrayEquals(tag, otherWords)) {
 				others.push(tag)
-			}else if(isArrayEquals(tag, bodyWords)){
+			} else if (isArrayEquals(tag, bodyWords)) {
 				bodys.push(tag)
-			}else if(isArrayEquals(tag, crothWords)){
+			} else if (isArrayEquals(tag, crothWords)) {
 				croths.push(tag)
-			}else if(isArrayEquals(tag, colorWords)){
+			} else if (isArrayEquals(tag, colorWords)) {
 				colors.push(tag)
-			}else{
+			} else {
 				tmps.push(tag)
 			}
 		}
 		tags = tmps
 		// 単語一致
 		tmps = []
-		for( let i = 0; i < tags.length; i++){
+		for (let i = 0; i < tags.length; i++) {
 			const tag = tags[i]
-			if(isArrayWordEquals(tag, otherWords)){
+			if (isArrayWordEquals(tag, otherWords)) {
 				others.push(tag)
-			}else if(isArrayWordEquals(tag, bodyWords)){
+			} else if (isArrayWordEquals(tag, bodyWords)) {
 				bodys.push(tag)
-			}else if(isArrayWordEquals(tag, crothWords)){
+			} else if (isArrayWordEquals(tag, crothWords)) {
 				croths.push(tag)
-			}else if(isArrayWordEquals(tag, colorWords)){
+			} else if (isArrayWordEquals(tag, colorWords)) {
 				colors.push(tag)
-			}else{
+			} else {
 				tmps.push(tag)
 			}
 		}
 		tags = tmps
 		// 部分一致
 		let tothers = []
-		for( let i = 0; i < tags.length; i++){
+		for (let i = 0; i < tags.length; i++) {
 			const tag = tags[i]
-			if(isArrayIncludes(tag, otherWords)){
+			if (isArrayIncludes(tag, otherWords)) {
 				tothers.push(tag)
-			}else if(isArrayIncludes(tag, bodyWords)){
+			} else if (isArrayIncludes(tag, bodyWords)) {
 				bodys.push(tag)
-			}else if(isArrayIncludes(tag, crothWords)){
+			} else if (isArrayIncludes(tag, crothWords)) {
 				croths.push(tag)
-			}else if(isArrayIncludes(tag, colorWords)){
+			} else if (isArrayIncludes(tag, colorWords)) {
 				colors.push(tag)
-			}else{
+			} else {
 				tothers.push(tag)
 			}
 		}
 		// その他に分類されたタグから、完全一致するタグを移動しなおして末尾に付ける
-		for( let i = 0; i < tothers.length; i++){
+		for (let i = 0; i < tothers.length; i++) {
 			const tag = tothers[i]
-			if(isArrayEquals(tag, otherWords)){
+			if (isArrayEquals(tag, otherWords)) {
 				others.push(tag)
-			}else if(isArrayEquals(tag, bodyWords)){
+			} else if (isArrayEquals(tag, bodyWords)) {
 				bodys.push(tag)
-			}else if(isArrayEquals(tag, crothWords)){
+			} else if (isArrayEquals(tag, crothWords)) {
 				croths.push(tag)
-			}else if(isArrayEquals(tag, colorWords)){
+			} else if (isArrayEquals(tag, colorWords)) {
 				colors.push(tag)
-			}else{
+			} else {
 				others.push(tag)
 			}
 		}
@@ -498,7 +498,7 @@ class DtUtil{
 			//console.log(a, ai, " - ", b , bi)
 			// findIndex は該当が無ければ-1を返す
 			//if(-1 === ai && -1 === bi){ return 0 }
-			if(-1 === ai){ return 1 }
+			if (-1 === ai) { return 1 }
 			return ai - bi
 		})
 		croths.sort((a, b) => {
@@ -507,13 +507,13 @@ class DtUtil{
 			//console.log(a, ai, " - ", b , bi)
 			// findIndex は該当が無ければ-1を返す
 			//if(-1 === ai && -1 === bi){ return 0 }
-			if(-1 === ai){ return 1 }
+			if (-1 === ai) { return 1 }
 			return ai - bi
 		})
 
 		// Group sort
 		let dsttags = []
-		switch(sortKind){
+		switch (sortKind) {
 			case 'character_sort':
 				dsttags.push(bodys)
 				dsttags.push(croths)
