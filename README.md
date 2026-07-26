@@ -38,6 +38,8 @@ FireFox,Chromeに対応しています。
 # License
 Public Domain  
 
+このプロジェクトは生成AIを用いて作成されたコードを含む
+
 
 # TODO
 - タグの自動カスタム
