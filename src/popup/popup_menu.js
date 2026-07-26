@@ -2,11 +2,11 @@
 
 let myconf;
 
-window.addEventListener( 'load', function(e){
+window.addEventListener('load', function (e) {
 	console.log('loaded')
 
 	// ** set callbacks
-	let onTargetKindRadioChanged = function(e){
+	let onTargetKindRadioChanged = function (e) {
 		console.debug("change", e.currentTarget.id);
 
 		const targetKind = e.currentTarget.id;
@@ -30,9 +30,9 @@ window.addEventListener( 'load', function(e){
 		chrome.storage.local.set(myconf)
 	});
 
-	let onSortKindRadioChanged = function(e){
+	let onSortKindRadioChanged = function (e) {
 		console.debug("change", e.currentTarget.id);
-		
+
 		const sortKind = e.currentTarget.id;
 		myconf.sortKind = sortKind;
 		chrome.storage.local.set(myconf)
@@ -42,9 +42,9 @@ window.addEventListener( 'load', function(e){
 	document.getElementById('no_sort').addEventListener('change', onSortKindRadioChanged);
 
 	// ** configure
-	chrome.storage.local.get(function(items) {
+	chrome.storage.local.get(function (items) {
 		console.log('loaded', items)
-		if(Object.keys(items).length === 0){
+		if (Object.keys(items).length === 0) {
 			console.warn('BUG nothing configure.')
 			return
 		}
@@ -57,9 +57,9 @@ window.addEventListener( 'load', function(e){
 		document.getElementById(myconf.sortKind).checked = true
 
 		// ** 読み込み成功したのでUIのロックを解除
-		document.getElementById('loading_error_message').style.display ="none"
+		document.getElementById('loading_error_message').style.display = "none"
 		let inputs = document.getElementsByTagName('input')
-		for( let i = 0; i < inputs.length; i++){
+		for (let i = 0; i < inputs.length; i++) {
 			inputs[i].disabled = ''
 		}
 	})

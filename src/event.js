@@ -11,10 +11,10 @@ const myconfDefault = {
 	'sortKind': 'character_sort'
 }
 
-function loadMyconf(func){
-	chrome.storage.local.get(function(items) {
+function loadMyconf(func) {
+	chrome.storage.local.get(function (items) {
 		console.log('loaded', items)
-		if(Object.keys(items).length === 0){
+		if (Object.keys(items).length === 0) {
 			// 新規設定項目を追加した後の起動では、読み込んだ設定Objに必要項目がないので、初期値で埋める
 			console.log('nothing save, use default.')
 			chrome.storage.local.set(myconfDefault)
@@ -29,13 +29,13 @@ function loadMyconf(func){
 
 // ******** Genaral ********
 
-function onError(error){
+function onError(error) {
 	console.error('Error:', error);
 	const msg = error.message
 	showErrorMsg(msg)
 }
 
-function showErrorMsg(msg){
+function showErrorMsg(msg) {
 	chrome.notifications.create(
 		"ErrorInDanTagsCopy",
 		{
@@ -53,7 +53,7 @@ function showErrorMsg(msg){
 chrome.runtime.onInstalled.addListener(() => {
 	console.log('onInstalled');
 
-	loadMyconf((t) => {});
+	loadMyconf((t) => { });
 
 	const parent = chrome.contextMenus.create({
 		id: 'diffusion',
@@ -68,44 +68,44 @@ chrome.contextMenus.onClicked.addListener((item) => {
 	const onSelectedTabs = (tabs) => {
 		loadMyconf((myconf) => {
 			const sending = chrome.tabs.sendMessage(
-					tabs[0].id,
-					{
-						'kind': 'request_collect_tags',
-						'configure': myconf,
-						'srcTabId': tabs[0].id
-					}
+				tabs[0].id,
+				{
+					'kind': 'request_collect_tags',
+					'configure': myconf,
+					'srcTabId': tabs[0].id
+				}
 			);
-			sending.then(()=>{console.log('sended')}).catch((e) => {console.warn('send error', e)});
+			sending.then(() => { console.log('sended') }).catch((e) => { console.warn('send error', e) });
 		});
 	}
-	
+
 	// dirty switch
 	// chrome.tabs.query() in firefox not working (not callback).
-	if(typeof browser !== 'undefined'){
+	if (typeof browser !== 'undefined') {
 		// firefox
-		let querying = browser.tabs.query({active: true, lastFocusedWindow:true})
+		let querying = browser.tabs.query({ active: true, lastFocusedWindow: true })
 		querying.then(onSelectedTabs).catch(onError);
-	}else{
+	} else {
 		// chrome
-		let querying = chrome.tabs.query({active: true, lastFocusedWindow:true})
+		let querying = chrome.tabs.query({ active: true, lastFocusedWindow: true })
 		querying.then(onSelectedTabs).catch(onError);
 	}
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-	switch(request.kind){
-	case 'response_collect_tags':
-		const text = onResponsedCollectTags(request.configure, request.collected_tag_struct);
-		chrome.tabs.sendMessage(
-			request.srcTabId,
-			{
-				'kind': 'request_write_clipboard',
-				'text': text,
-			}
-		);
-		break;
-	default:
-		console.error('invalid', request);
+	switch (request.kind) {
+		case 'response_collect_tags':
+			const text = onResponsedCollectTags(request.configure, request.collected_tag_struct);
+			chrome.tabs.sendMessage(
+				request.srcTabId,
+				{
+					'kind': 'request_write_clipboard',
+					'text': text,
+				}
+			);
+			break;
+		default:
+			console.error('invalid', request);
 	}
 });
 
@@ -118,7 +118,7 @@ const onResponsedCollectTags = (myconf, collected_tag_struct) => {
 	tagarrays.unshift(charas)
 	console.log(tagarrays)
 
-	if(myconf.escapeBrackets){
+	if (myconf.escapeBrackets) {
 		tagarrays.forEach((tagarr, index) => {
 			const newtagarr = tagarr.map((tag) => {
 				// プロンプトでは括弧は強弱指定となるためタグの括弧をエスケープする
@@ -135,36 +135,36 @@ const onResponsedCollectTags = (myconf, collected_tag_struct) => {
 	}
 
 	let s = ''
-	switch(myconf.targetKind){
-	case 'diffusion':
-	{
-		tagarrays = tagarrays.map((tagarr) => {
-			return tagarr.map((tag) => {
-				return tag.replaceAll(' ', '_')
+	switch (myconf.targetKind) {
+		case 'diffusion':
+			{
+				tagarrays = tagarrays.map((tagarr) => {
+					return tagarr.map((tag) => {
+						return tag.replaceAll(' ', '_')
+					})
+				})
+
+				const ss = tagarrays.map((tagarr) => {
+					return tagarr.join(' ')
+				})
+				// Tagグループ間は２つ開ける
+				// 基本的にはデバッグのための挙動
+				// プロンプトに空白を増やしても画像生成に副作用はないはず
+				s = ss.join('  ')
+			}
+			break
+		case 'novelai':
+			let ss = tagarrays.map((tagarr) => {
+				return tagarr.join(', ')
 			})
-		})
-
-		const ss = tagarrays.map((tagarr) => {
-			return tagarr.join(' ')
-		})
-		// Tagグループ間は２つ開ける
-		// 基本的にはデバッグのための挙動
-		// プロンプトに空白を増やしても画像生成に副作用はないはず
-		s = ss.join('  ')
-	}
-		break
-	case 'novelai':
-		let ss = tagarrays.map((tagarr) => {
-			return tagarr.join(', ')
-		})
-		ss = ss.filter((tarray) => 0 < tarray.length)
-		s = ss.join(',  ')
-		break
-	default:
-		showErrorMsg('BUG invalid:' + myconf.targetKind)
+			ss = ss.filter((tarray) => 0 < tarray.length)
+			s = ss.join(',  ')
+			break
+		default:
+			showErrorMsg('BUG invalid:' + myconf.targetKind)
 	}
 
-	if(myconf.withUrl){
+	if (myconf.withUrl) {
 		// 念のため、取り除き忘れ対策として重みを消しておく
 		// StableDiffusionの記法ではこれで重みゼロになる（はず。未確認）だが、
 		// NovelAIで重みゼロにする方法は不明。

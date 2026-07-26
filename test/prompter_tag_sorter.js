@@ -26,14 +26,14 @@ const sampleTree = {
 
 // ---- _escapeTag ----
 
-it("_escapeTag: isEscapeBrackets=false leaves the tag unchanged", function() {
+it("_escapeTag: isEscapeBrackets=false leaves the tag unchanged", function () {
 	assert.equal(
 		PrompterTagSorter._escapeTag('hatching (texture)', false),
 		'hatching (texture)'
 	);
 });
 
-it("_escapeTag: isEscapeBrackets=true escapes both () and []", function() {
+it("_escapeTag: isEscapeBrackets=true escapes both () and []", function () {
 	assert.equal(
 		PrompterTagSorter._escapeTag('hatching (texture)', true),
 		'hatching \\(texture\\)'
@@ -46,14 +46,14 @@ it("_escapeTag: isEscapeBrackets=true escapes both () and []", function() {
 
 // ---- _convertSeparator ----
 
-it("_convertSeparator: diffusion keeps spaces as-is", function() {
+it("_convertSeparator: diffusion keeps spaces as-is", function () {
 	assert.equal(
 		PrompterTagSorter._convertSeparator('female butler', 'diffusion'),
 		'female butler'
 	);
 });
 
-it("_convertSeparator: novelai converts spaces to underscores", function() {
+it("_convertSeparator: novelai converts spaces to underscores", function () {
 	assert.equal(
 		PrompterTagSorter._convertSeparator('female butler', 'novelai'),
 		'female_butler'
@@ -62,7 +62,7 @@ it("_convertSeparator: novelai converts spaces to underscores", function() {
 
 // ---- _flattenTree ----
 
-it("_flattenTree: flattens regardless of group/subgroup structure", function() {
+it("_flattenTree: flattens regardless of group/subgroup structure", function () {
 	// 同じタグ集合を、あえて別のグループ/サブグループ構造で表現した
 	// 2つの固定フィクスチャ。構造に依存せず同じ結果になることを確認する。
 	const treeA = {
@@ -86,19 +86,19 @@ it("_flattenTree: flattens regardless of group/subgroup structure", function() {
 
 // ---- _orderGroups ----
 
-it("_orderGroups: character_sort follows the preset order and skips missing groups", function() {
+it("_orderGroups: character_sort follows the preset order and skips missing groups", function () {
 	const ordered = PrompterTagSorter._orderGroups('character_sort', sampleTree);
 	assert.deepEqual(ordered.map((g) => g.group), ['basic', 'theme', 'clothing', 'background']);
 });
 
-it("_orderGroups: scene_sort follows its own preset order", function() {
+it("_orderGroups: scene_sort follows its own preset order", function () {
 	const ordered = PrompterTagSorter._orderGroups('scene_sort', sampleTree);
 	assert.deepEqual(ordered.map((g) => g.group), ['background', 'clothing', 'theme', 'basic']);
 });
 
 // ---- sorting() end-to-end ----
 
-it("sorting: character_sort assembles groups with blank lines and lines with newlines", function() {
+it("sorting: character_sort assembles groups with blank lines and lines with newlines", function () {
 	const result = PrompterTagSorter.sorting('character_sort', false, 'diffusion', sampleTree);
 
 	const expected = [
@@ -115,7 +115,7 @@ it("sorting: character_sort assembles groups with blank lines and lines with new
 	assert.equal(result, expected);
 });
 
-it("sorting: scene_sort reorders groups but keeps the same line-assembly rules", function() {
+it("sorting: scene_sort reorders groups but keeps the same line-assembly rules", function () {
 	const result = PrompterTagSorter.sorting('scene_sort', false, 'diffusion', sampleTree);
 
 	const expected = [
@@ -132,7 +132,7 @@ it("sorting: scene_sort reorders groups but keeps the same line-assembly rules",
 	assert.equal(result, expected);
 });
 
-it("sorting: isEscapeBrackets + targetKind are applied per-tag before assembly", function() {
+it("sorting: isEscapeBrackets + targetKind are applied per-tag before assembly", function () {
 	const result = PrompterTagSorter.sorting('character_sort', true, 'novelai', sampleTree);
 
 	// "hatching (texture)" -> escape -> "hatching \(texture\)" -> underscore化 -> "hatching_\(texture\)"
@@ -141,7 +141,7 @@ it("sorting: isEscapeBrackets + targetKind are applied per-tag before assembly",
 	assert.equal(result.indexOf('female_butler') !== -1, true);
 });
 
-it("sorting: no_sort flattens everything into one alphabetically-sorted, comma-joined line", function() {
+it("sorting: no_sort flattens everything into one alphabetically-sorted, comma-joined line", function () {
 	// sampleTree とは別構造・別キー順の固定フィクスチャ(タグ集合は同じ)で、
 	// 構造に依存しないことも合わせて確認する
 	const restructuredTree = {
@@ -164,8 +164,8 @@ it("sorting: no_sort flattens everything into one alphabetically-sorted, comma-j
 	assert.equal(result, expected);
 });
 
-it("sorting: an unknown sortKind throws", function() {
-	assert.throws(function() {
+it("sorting: an unknown sortKind throws", function () {
+	assert.throws(function () {
 		PrompterTagSorter.sorting('unknown_sort', false, 'diffusion', sampleTree);
 	});
 });

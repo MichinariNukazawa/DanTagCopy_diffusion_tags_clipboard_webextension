@@ -34,109 +34,165 @@ class DanbooruTagClassifier {
   static get STAGES() {
     return [
       // 1. 基本情報: 人数指定など
-      { group: 'basic', lines: [
-        { name: 'count', keywords: [
-          '1girl', '2girls', '3girls', '4girls', '5girls',
-          '1boy', '2boys', '3boys',
-          'multiple girls', 'multiple boys', 'solo', 'duo', 'group',
-        ]},
-      ]},
+      {
+        group: 'basic', lines: [
+          {
+            name: 'count', keywords: [
+              '1girl', '2girls', '3girls', '4girls', '5girls',
+              '1boy', '2boys', '3boys',
+              'multiple girls', 'multiple boys', 'solo', 'duo', 'group',
+            ]
+          },
+        ]
+      },
 
       // 2. テーマ: 役割や全体の衣装名
-      { group: 'theme', lines: [
-        { name: 'role', keywords: [
-          'maid', 'butler', 'nurse', 'waitress', 'idol', 'miko', 'shrine maiden',
-          'samurai', 'ninja', 'knight', 'witch', 'magical girl', 'soldier',
-          'police', 'teacher', 'princess', 'queen', 'king', 'office lady',
-        ]},
-        { name: 'costume_meta', keywords: [
-          'alternate costume', 'cosplay',
-        ]},
-      ]},
+      {
+        group: 'theme', lines: [
+          {
+            name: 'role', keywords: [
+              'maid', 'butler', 'nurse', 'waitress', 'idol', 'miko', 'shrine maiden',
+              'samurai', 'ninja', 'knight', 'witch', 'magical girl', 'soldier',
+              'police', 'teacher', 'princess', 'queen', 'king', 'office lady',
+            ]
+          },
+          {
+            name: 'costume_meta', keywords: [
+              'alternate costume', 'cosplay',
+            ]
+          },
+        ]
+      },
 
       // 3. 構図・視点: 描画範囲、カメラ位置、フォーカス
-      { group: 'view', lines: [
-        { name: 'shot_range', keywords: [
-          'full body', 'upper body', 'lower body', 'cowboy shot',
-          'close-up', 'portrait',
-        ]},
-        { name: 'camera', keywords: [
-          'pov', 'from side', 'from above', 'from below', 'from behind', 'dutch angle',
-        ]},
-        { name: 'focus', pattern: /focus/ },
-      ]},
+      {
+        group: 'view', lines: [
+          {
+            name: 'shot_range', keywords: [
+              'full body', 'upper body', 'lower body', 'cowboy shot',
+              'close-up', 'portrait',
+            ]
+          },
+          {
+            name: 'camera', keywords: [
+              'pov', 'from side', 'from above', 'from below', 'from behind', 'dutch angle',
+            ]
+          },
+          { name: 'focus', pattern: /focus/ },
+        ]
+      },
 
       // 4. 顔・表情(頭部): 雰囲気、視線、顔周り
-      { group: 'face', lines: [
-        { name: 'hair', keywords: [
-          'hair', 'bald', 'sidelock', 'ponytail', 'twintail', 'afro', 'mohawk',
-          'braid', 'bun', 'bang', 'ahoge', 'intake', 'comb over',
-        ]},
-        { name: 'expression', keywords: [
-          'smile', 'grin', 'blush', 'crying', 'tears', 'angry', 'wink',
-          'expressionless', 'love expression', 'gently',
-        ]},
-        { name: 'gaze', keywords: [
-          'looking at viewer', 'looking up', 'looking away', 'looking back', 'looking down',
-        ]},
-        { name: 'mouth_eyes', keywords: [
-          'eye', 'sclera', 'pupil', 'mouth', 'lip', 'tongue', 'fang', 'teeth', 'tusk',
-          'skin fang', 'detailed eyes', 'close mouth', 'open mouth',
-        ]},
-      ]},
+      {
+        group: 'face', lines: [
+          {
+            name: 'hair', keywords: [
+              'hair', 'bald', 'sidelock', 'ponytail', 'twintail', 'afro', 'mohawk',
+              'braid', 'bun', 'bang', 'ahoge', 'intake', 'comb over',
+            ]
+          },
+          {
+            name: 'expression', keywords: [
+              'smile', 'grin', 'blush', 'crying', 'tears', 'angry', 'wink',
+              'expressionless', 'love expression', 'gently',
+            ]
+          },
+          {
+            name: 'gaze', keywords: [
+              'looking at viewer', 'looking up', 'looking away', 'looking back', 'looking down',
+            ]
+          },
+          {
+            name: 'mouth_eyes', keywords: [
+              'eye', 'sclera', 'pupil', 'mouth', 'lip', 'tongue', 'fang', 'teeth', 'tusk',
+              'skin fang', 'detailed eyes', 'close mouth', 'open mouth',
+            ]
+          },
+        ]
+      },
 
       // 5. ポーズ・動作(身体): 手や胴体の動き
-      { group: 'pose', lines: [
-        { name: 'hand_arm', keywords: [
-          'hand on', 'arm', 'holding', 'crossed arms', 'hands clasped', 'hand behind',
-        ]},
-        { name: 'body_action', keywords: [
-          'arched back', 'standing', 'sitting', 'kneeling', 'lying', 'squatting',
-          'running', 'jumping', 'leaning', 'stretching', 'spread legs', 'bent over',
-        ]},
-      ]},
+      {
+        group: 'pose', lines: [
+          {
+            name: 'hand_arm', keywords: [
+              'hand on', 'arm', 'holding', 'crossed arms', 'hands clasped', 'hand behind',
+            ]
+          },
+          {
+            name: 'body_action', keywords: [
+              'arched back', 'standing', 'sitting', 'kneeling', 'lying', 'squatting',
+              'running', 'jumping', 'leaning', 'stretching', 'spread legs', 'bent over',
+            ]
+          },
+        ]
+      },
 
       // 6. 服装(装飾): 上半身から下半身へ向かってパーツごとに改行
-      { group: 'clothing', lines: [
-        { name: 'headwear', keywords: [
-          'hat', 'cap', 'crown', 'tiara', 'veil', 'headband', 'helmet', 'beret',
-        ]},
-        { name: 'neckwear', keywords: [
-          'neck ribbon', 'necktie', 'ascot', 'choker', 'necklace', 'scarf', 'pendant',
-        ]},
-        { name: 'outerwear', keywords: [
-          'suit', 'coattails', 'jacket', 'coat', 'cloak', 'cape', 'vest', 'uniform',
-        ]},
-        { name: 'upperbody_detail', keywords: [
-          'shirt', 'collared shirt', 'frill', 'blouse', 'camisole', 'corset',
-          'breasts', 'chest', 'vertical line', 'center frills',
-        ]},
-        { name: 'handwear', keywords: [
-          'glove', 'gauntlet',
-        ]},
-        { name: 'legwear', keywords: [
-          'pants', 'skirt', 'shorts', 'thighhighs', 'pantyhose', 'stocking', 'leggings',
-        ]},
-        { name: 'footwear', keywords: [
-          'boots', 'shoes', 'footwear', 'sandals', 'heels',
-        ]},
-        { name: 'accessory', keywords: [
-          'ribbon', 'lace', 'earrings', 'bracelet', 'glasses', 'sunglasses', 'mask',
-        ]},
-      ]},
+      {
+        group: 'clothing', lines: [
+          {
+            name: 'headwear', keywords: [
+              'hat', 'cap', 'crown', 'tiara', 'veil', 'headband', 'helmet', 'beret',
+            ]
+          },
+          {
+            name: 'neckwear', keywords: [
+              'neck ribbon', 'necktie', 'ascot', 'choker', 'necklace', 'scarf', 'pendant',
+            ]
+          },
+          {
+            name: 'outerwear', keywords: [
+              'suit', 'coattails', 'jacket', 'coat', 'cloak', 'cape', 'vest', 'uniform',
+            ]
+          },
+          {
+            name: 'upperbody_detail', keywords: [
+              'shirt', 'collared shirt', 'frill', 'blouse', 'camisole', 'corset',
+              'breasts', 'chest', 'vertical line', 'center frills',
+            ]
+          },
+          {
+            name: 'handwear', keywords: [
+              'glove', 'gauntlet',
+            ]
+          },
+          {
+            name: 'legwear', keywords: [
+              'pants', 'skirt', 'shorts', 'thighhighs', 'pantyhose', 'stocking', 'leggings',
+            ]
+          },
+          {
+            name: 'footwear', keywords: [
+              'boots', 'shoes', 'footwear', 'sandals', 'heels',
+            ]
+          },
+          {
+            name: 'accessory', keywords: [
+              'ribbon', 'lace', 'earrings', 'bracelet', 'glasses', 'sunglasses', 'mask',
+            ]
+          },
+        ]
+      },
 
       // 7. 背景・環境: 場所、建築様式など
-      { group: 'background', lines: [
-        { name: 'place', keywords: [
-          'indoor', 'outdoor', 'forest', 'city', 'room', 'school', 'beach', 'sky',
-          'architecture', 'building',
-        ]},
-      ]},
+      {
+        group: 'background', lines: [
+          {
+            name: 'place', keywords: [
+              'indoor', 'outdoor', 'forest', 'city', 'room', 'school', 'beach', 'sky',
+              'architecture', 'building',
+            ]
+          },
+        ]
+      },
 
       // 8. その他: 上記以外(未分類タグの受け皿。必ず最後に置く。全タグ保存の不変条件を担保する)
-      { group: 'other', lines: [
-        { name: 'misc', pattern: /.*/ },
-      ]},
+      {
+        group: 'other', lines: [
+          { name: 'misc', pattern: /.*/ },
+        ]
+      },
     ];
   }
 

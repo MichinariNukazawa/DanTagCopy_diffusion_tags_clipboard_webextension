@@ -52,7 +52,7 @@ function flattenGroup(result, group) {
 	return result[group].reduce((acc, subgroup) => acc.concat(subgroup.tags), []);
 }
 
-it("sample prompt: each tag is assigned to the correct group (order-independent)", function() {
+it("sample prompt: each tag is assigned to the correct group (order-independent)", function () {
 	const allTags = Object.keys(expectedGroups)
 		.reduce((acc, group) => acc.concat(expectedGroups[group]), []);
 	const input = shuffle(allTags);
@@ -66,7 +66,7 @@ it("sample prompt: each tag is assigned to the correct group (order-independent)
 	});
 });
 
-it("output preserves every input tag exactly once (no loss, no duplication)", function() {
+it("output preserves every input tag exactly once (no loss, no duplication)", function () {
 	const allTags = Object.keys(expectedGroups)
 		.reduce((acc, group) => acc.concat(expectedGroups[group]), []);
 	const input = shuffle(allTags);
@@ -79,7 +79,7 @@ it("output preserves every input tag exactly once (no loss, no duplication)", fu
 	assert.deepEqual(flattened.slice().sort(), input.slice().sort());
 });
 
-it("empty groups are omitted from the result (no empty-array keys)", function() {
+it("empty groups are omitted from the result (no empty-array keys)", function () {
 	// basicとthemeに該当するタグを含まない入力
 	const input = ['indoor', 'simple background'];
 
