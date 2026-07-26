@@ -8,7 +8,7 @@
     "archive-firefox": "node scripts/archive.js dist.firefox/ dantagcopy_webextensions_firefox.zip",
     "archive-src": "git archive HEAD --output=dantagcopy_webextensions_src.zip",
     "release": "node scripts/build.js && npm run archive-chrome && npm run archive-firefox && npm run archive-src",
-    "start:firefox": "TMPDIR=tmp/ web-ext run --source-dir dist.firefox/ --arg=\"--new-tab=about:debugging#/runtime/this-firefox\" --arg=\"--new-tab=https://danbooru.donmai.us/posts/4930919\"",
+    "start:firefox": "TMPDIR=$HOME/tmp web-ext run --source-dir dist.firefox/ --arg=\"--new-tab=about:debugging#/runtime/this-firefox\" --arg=\"--new-tab=https://danbooru.donmai.us/posts/4930919\"",
     "start:chromium": "chromium --temp-profile --load-extension=dist.chrome/ https://danbooru.donmai.us/posts/4930919",
     "test": "mocha",
     "testtotest": "mocha test/mocha.js"

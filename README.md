@@ -62,6 +62,13 @@ npm install
 npm run release
 ```
 
+## Ubuntu snapのFireFoxでのデバッグ(web-ext)
+一時プロファイルの配置がホームディレクトリ下である必要があるとのことで、
+予めディレクトリを作成しておく。
+```
+mkdir ~/tmp
+```
+
 
 # Contact
 mail: [michinari.nukazawa@gmail.com][mailto]  
