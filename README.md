@@ -69,6 +69,15 @@ npm run release
 mkdir ~/tmp
 ```
 
+また恐らく `about:config` の設定が必要
+```
+devtools.debugger.remote-enabled = true
+devtools.chrome.enabled = true
+```
+
+## その他
+2026/07 時点でfirefoxのアドオン読み込みは手動・web-ext共にroot外のストレージからはicon,jsの読み込みに失敗する
+
 
 # Contact
 mail: [michinari.nukazawa@gmail.com][mailto]  
