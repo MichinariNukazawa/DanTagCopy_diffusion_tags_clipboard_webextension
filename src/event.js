@@ -9,7 +9,7 @@ const myconfDefault = {
 	'targetKind': 'diffusion',
 	'escapeBrackets': true,
 	'withUrl': false,
-	'sortKind': 'character_sort'
+	'sortKind': 'scene_sort'
 }
 
 function loadMyconf(func) {
@@ -118,7 +118,7 @@ const onResponsedCollectTags = (myconf, collected_tag_struct) => {
 	let classifiedDanbooruTagTree = DanbooruTagClassifier.classifyTags(genes)
 
 	const charas = collected_tag_struct.characters
-	classifiedDanbooruTagTree['character'] = [{ name: 'character', tags: charas }]
+	classifiedDanbooruTagTree['header'] = [{ name: 'character', tags: charas }]
 	console.debug('classifiedDanbooruTagTree:', classifiedDanbooruTagTree)
 
 	let prompt = PromptTagSorter.sorting(

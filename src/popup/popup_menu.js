@@ -37,8 +37,8 @@ window.addEventListener('load', function (e) {
 		myconf.sortKind = sortKind;
 		chrome.storage.local.set(myconf)
 	}
-	document.getElementById('character_sort').addEventListener('change', onSortKindRadioChanged);
 	document.getElementById('scene_sort').addEventListener('change', onSortKindRadioChanged);
+	document.getElementById('character_sort').addEventListener('change', onSortKindRadioChanged);
 	document.getElementById('no_sort').addEventListener('change', onSortKindRadioChanged);
 
 	// ** configure
