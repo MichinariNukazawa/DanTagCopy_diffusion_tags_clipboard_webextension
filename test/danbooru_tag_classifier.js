@@ -10,14 +10,15 @@ const DanbooruTagClassifier = require('../src/danbooru_tag_classifier');
 // 本メソッドの入力仕様(重み付き・複合タグは非対応)のスコープ外なので、
 // 個別タグ "european architecture" / "gothic architecture" に分解した
 // 上でフィクスチャに採用している(重みの ":0.3" は落とす)。
-const expectedGroups = {
+const expectedGroups01 = {
 	basic: ['1girl', 'solo'],
 	theme: ['female butler', 'alternate costume'],
-	view: ['full body', 'pov', 'focusing face'],
+	view: ['full body', 'pov', 'focusing face', 'detailed eyes'],
+	character: ['skin fang',],
 	face: [
 		'gently smile', 'love expression',
 		'looking at viewer', 'looking up',
-		'close mouth', 'skin fang', 'detailed eyes',
+		'close mouth',
 	],
 	pose: ['hand on own chest', 'arm behind back', 'arched back'],
 	clothing: [
@@ -28,8 +29,34 @@ const expectedGroups = {
 		'white gloves',
 		'long pants',
 	],
-	background: ['indoor', 'european architecture', 'gothic architecture'],
-	other: ['simple background'],
+	background: [
+		'indoor', 'european architecture', 'gothic architecture', 'simple background',
+		'table', 'wooden floor', 'wooden table'
+	],
+	other: ['teapot', 'teacup', 'saucer',],
+};
+
+const expectedGroups02 = {
+	basic: ['2girls', 'multiple girls'],
+	character: [
+		'brown hair', 'hair bow', 'long hair', 'side ponytail', 'very long hair',
+		'hair between eyes', 'yellow eyes',
+	],
+	pose: ['hand up'],
+	clothing: [
+		'serafuku', 'school uniform',
+		'sailor collar', 'grey sailor collar', 'shirt', 'white shirt',
+		'grey skirt', 'pleated skirt', 'skirt',
+		'thighhighs', 'black thighhighs',
+		'bow', 'white bow'],
+	face: [
+		'pout',
+		'squiggle',
+		':o', ':t',
+		'closed mouth', 'parted lips',
+		'flying sweatdrops',
+	],
+	background: ['grey background', 'two-tone background', 'white background',]
 };
 
 // フィッシャー-イェーツで配列をシャッフルする。
@@ -52,23 +79,37 @@ function flattenGroup(result, group) {
 	return result[group].reduce((acc, subgroup) => acc.concat(subgroup.tags), []);
 }
 
-it("sample prompt: each tag is assigned to the correct group (order-independent)", function () {
-	const allTags = Object.keys(expectedGroups)
-		.reduce((acc, group) => acc.concat(expectedGroups[group]), []);
+it("sample prompts 01: each tag is assigned to the correct group (order-independent)", function () {
+	const allTags = Object.keys(expectedGroups01)
+		.reduce((acc, group) => acc.concat(expectedGroups01[group]), []);
 	const input = shuffle(allTags);
 
 	const result = DanbooruTagClassifier.classifyTags(input);
 
-	Object.keys(expectedGroups).forEach((group) => {
+	Object.keys(expectedGroups01).forEach((group) => {
 		const actual = flattenGroup(result, group).slice().sort();
-		const expected = expectedGroups[group].slice().sort();
+		const expected = expectedGroups01[group].slice().sort();
+		assert.deepEqual(actual, expected);
+	});
+});
+
+it("sample prompts 02: each tag is assigned to the correct group (order-independent)", function () {
+	const allTags = Object.keys(expectedGroups02)
+		.reduce((acc, group) => acc.concat(expectedGroups02[group]), []);
+	const input = shuffle(allTags);
+
+	const result = DanbooruTagClassifier.classifyTags(input);
+
+	Object.keys(expectedGroups02).forEach((group) => {
+		const actual = flattenGroup(result, group).slice().sort();
+		const expected = expectedGroups02[group].slice().sort();
 		assert.deepEqual(actual, expected);
 	});
 });
 
 it("output preserves every input tag exactly once (no loss, no duplication)", function () {
-	const allTags = Object.keys(expectedGroups)
-		.reduce((acc, group) => acc.concat(expectedGroups[group]), []);
+	const allTags = Object.keys(expectedGroups01)
+		.reduce((acc, group) => acc.concat(expectedGroups01[group]), []);
 	const input = shuffle(allTags);
 
 	const result = DanbooruTagClassifier.classifyTags(input);
@@ -88,5 +129,5 @@ it("empty groups are omitted from the result (no empty-array keys)", function ()
 	assert.equal(false, 'basic' in result);
 	assert.equal(false, 'theme' in result);
 	assert.equal(true, 'background' in result);
-	assert.equal(true, 'other' in result);
+	assert.equal(false, 'other' in result);
 });
