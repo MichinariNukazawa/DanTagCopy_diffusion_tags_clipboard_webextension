@@ -88,12 +88,12 @@ it("_flattenTree: flattens regardless of group/subgroup structure", function () 
 
 it("_orderGroups: character_sort follows the preset order and skips missing groups", function () {
 	const ordered = PrompterTagSorter._orderGroups('character_sort', sampleTree);
-	assert.deepEqual(ordered.map((g) => g.group), ['basic', 'theme', 'clothing', 'background']);
+	assert.deepEqual(ordered.map((g) => g.group), ['clothing', 'basic', 'theme', 'background']);
 });
 
 it("_orderGroups: scene_sort follows its own preset order", function () {
 	const ordered = PrompterTagSorter._orderGroups('scene_sort', sampleTree);
-	assert.deepEqual(ordered.map((g) => g.group), ['background', 'clothing', 'theme', 'basic']);
+	assert.deepEqual(ordered.map((g) => g.group), ['basic', 'theme', 'clothing', 'background',]);
 });
 
 // ---- sorting() end-to-end ----
@@ -102,12 +102,12 @@ it("sorting: character_sort assembles groups with blank lines and lines with new
 	const result = PrompterTagSorter.sorting('character_sort', false, 'diffusion', sampleTree);
 
 	const expected = [
+		'black neck ribbon,',
+		'collared shirt, hatching (texture),',
+		'',
 		'1girl, solo,',
 		'',
 		'female butler,',
-		'',
-		'black neck ribbon,',
-		'collared shirt, hatching (texture),',
 		'',
 		'indoor',
 	].join('\n');
@@ -119,14 +119,14 @@ it("sorting: scene_sort reorders groups but keeps the same line-assembly rules",
 	const result = PrompterTagSorter.sorting('scene_sort', false, 'diffusion', sampleTree);
 
 	const expected = [
-		'indoor,',
+		'1girl, solo,',
+		'',
+		'female butler,',
 		'',
 		'black neck ribbon,',
 		'collared shirt, hatching (texture),',
 		'',
-		'female butler,',
-		'',
-		'1girl, solo',
+		'indoor',
 	].join('\n');
 
 	assert.equal(result, expected);

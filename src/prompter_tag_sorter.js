@@ -32,9 +32,8 @@ class PrompterTagSorter {
 
   static get GROUP_ORDER_PRESETS() {
     return {
-      // 仮置き。厳密な並びは後で手作業調整する前提
-      character_sort: ['character','basic', 'theme', 'face', 'pose', 'clothing', 'view', 'background', 'other'],
-      scene_sort: ['character', 'background', 'view', 'clothing', 'pose', 'face', 'theme', 'basic', 'other'],
+      scene_sort: ['header', 'basic', 'theme', 'view', 'character', 'face', 'pose', 'clothing', 'background', 'other'],
+      character_sort: ['header', 'character', 'clothing', 'face', 'pose', 'basic', 'theme', 'view', 'background', 'other'],
     };
   }
 
