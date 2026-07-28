@@ -72,7 +72,10 @@ class DanbooruTagClassifier {
           },
           {
             name: 'costume_meta', keywords: [
-              'alternate costume', 'cosplay', 'age up', 'age down', 'obese',
+              'alternate costume', 'cosplay', 
+              'age up', 'age down', 
+              'obese',
+              'chibi', 'deformed', 
             ]
           },
           {
@@ -86,6 +89,7 @@ class DanbooruTagClassifier {
             'words': [
               'yukadon', 'kabedon', 'mizudon',
               'come hither', 'under covers',
+              'incoming gift', 'incoming food', 'incoming drink',
               'masturbation',
               'orgy', 'anal', 'oral', 'vaginal',
               'handjob', 'blowjob', 'facejob', 'facial',
@@ -110,6 +114,17 @@ class DanbooruTagClassifier {
             name: 'camera', keywords: [
               'pov', 'from side', 'from above', 'from below', 'from behind', 'dutch angle',
             ]
+          },
+          {
+            // https://danbooru.donmai.us/wiki_pages/the_viewer
+            name: 'character_facing',
+            words: [
+              'straight-on', 'foreshortening',
+            ], patterns: [
+              /^facing /, // ex. facing viewer
+              // ex. 'attacking viewer'. ただし'looking at viewer'がかからないように処置
+              /^\w+ing viewer$/, 
+            ],
           },
           { name: 'focus', patterns: [/focus/] },
           { name: 'detailed', patterns: [/detail/] },
@@ -152,7 +167,14 @@ class DanbooruTagClassifier {
               // 髪色個別
               'multicolored hair', 'colored inner hair', 'gradient hair', 'rainbow hair',
               'split-color hair', 'streaked hair', 'two-tone hair', 'colored tips',
-            ]
+              //
+              'bob', 'cut', 'flattop', 'undercut', 
+              'drills', 'sidelock'
+            ],
+            words: ['half updo',  'one side up','two side up',
+              'tri tails','quad tails','quin tails',
+              'topknot', 'ringlets', 'ahoge', 'sidecut'
+            ],
           },
           {
             name: 'facial_hair', keywords: [
@@ -165,8 +187,14 @@ class DanbooruTagClassifier {
             ]
           },
           {
+            // danbooru.donmai.us/wiki_pages/tag_group%3Aeyes_tags
             name: 'eye', keywords: [
-              'eye', 'sclera', 'pupil', 'heterochromia',
+              'sclera', 'pupil', 'heterochromia', 'red eyes',
+            ],
+            patterns: [ 
+              // ex. 'blue eyes', など
+              // 'closed eyes' などはここにかからないようにする('red eyes'も除外されてしまうので別途指定)
+              /\w+(?<!ed|ing) eyes$/, 
             ]
           },
           {
@@ -229,9 +257,12 @@ class DanbooruTagClassifier {
             ]
           },
           {
-            name: 'emote', words: ['x mouth', '>:)', '>:(', ':>=', '\\(^o^)/', '<o>_<o>', '<|>_<|>',],
+            name: 'emote', words: [
+              'x mouth', '>:)', '>:(', ':>=', '\\(^o^)/',
+              '<o>_<o>', '<|>_<|>', '> <', '>3<'
+            ],
             patterns: [
-              /^[:;Xx]\w+$/, // ex.':p'
+              /^[:;Xx]\w+$/, // ex.':p', 'X3', 'XD'
               /^\w_\w$/, // ex. 'T_T','>_@'
             ]
           },
@@ -378,11 +409,18 @@ class DanbooruTagClassifier {
             ]
           },
           {
-            name: 'cloth_details',
+            name: 'cloth_cutout',
             words: [
               // ボディーパーツ名のみのタグは、その箇所が露出/透過して見えている服装表現
-              'collarbone', 'naval', 'nipple', 'nipples', 'breasts', 'underboob', 'stomach',
+              'collarbone', 'navel', 'nipple', 'nipples', 'breasts', 'underboob', 'stomach',
               'hips', 'ass', 'anus', 'underbutt', 'pussy', 'vagina',
+            ]
+          },
+          {
+            name: 'cloth_details',
+            words: [
+              'ass visible through thighs',
+              'shrug (clothing)',
             ],
             keywords: [
               // 露出のある衣装
@@ -396,14 +434,14 @@ class DanbooruTagClassifier {
               'layered',
             ],
             patterns: [
-              /^covered /,      // 布が吸着してボディパーツの形が見える服 ex.'covered naval',
+              /^covered /,      // 布が吸着してボディパーツの形が見える服 ex.'covered navel',
               /^impossible /,   // 肌に吸い付いている服
               /^taut /,         // 布が締まっている服
               /^naked /,
             ],
           },
           {
-            name: 'nude_nudelike',
+            name: 'nude_or_nudelike',
             keywords: [
               'nude', 'topless', 'bare'
             ]
@@ -420,7 +458,7 @@ class DanbooruTagClassifier {
               'architecture', 'building', 'background', 'landscape', 'nature', 'street', 'garden', 'temple',
               'floor', 'table', 'wall', 'window', 'door', 'ceil',
               'room', 'corridor', 'hallway', 'staircase', 'balcony', 'porch', 'patio', 'roof', 'rooftop',
-              'cave', 'tunnel', 'bridge', 'tower', 'castle', 'palace', 'shrine', 
+              'cave', 'tunnel', 'bridge', 'tower', 'castle', 'palace', 'shrine',
               'dark', 'bright', 'sunny', 'cloud', 'rain', 'snow', 'fogg',
               'evening', 'night', 'dawn', 'dusk', 'sunset', 'sunrise',
               'atmosphere', 'lighting', 'shadow', 'reflection', 'refraction', 'lens flare',
