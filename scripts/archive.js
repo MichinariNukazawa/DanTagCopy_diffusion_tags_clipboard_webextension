@@ -1,10 +1,10 @@
 const fs = require('fs');
 const path = require('path');
-const archiver = require('archiver');
+const { ZipArchive } = require('archiver'); // archiver v8.0.0からarchiver('zip', opts)は廃止され、フォーマットごとのクラスをnewする形になった
 
 function zipDirectory(directoryPath, zipFilePath) {
   const output = fs.createWriteStream(zipFilePath);
-  const archive = archiver('zip', { zlib: { level: 9 } });
+  const archive = new ZipArchive({ zlib: { level: 9 } });
 
   output.on('close', () => {
     console.log('ZIP archive created successfully');
