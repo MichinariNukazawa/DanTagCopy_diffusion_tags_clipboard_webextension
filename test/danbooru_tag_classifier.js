@@ -131,3 +131,27 @@ it("empty groups are omitted from the result (no empty-array keys)", function ()
 	assert.equal(true, 'background' in result);
 	assert.equal(false, 'other' in result);
 });
+
+// classifyTags([tag]) の結果から、そのタグが実際に分類された group名を取り出す。
+// 1タグだけを渡しているので、排他性の不変条件(1タグは1箇所にのみ属する)と
+// otherが必ず受け皿になる設計により、常にちょうど1つのgroupキーが立つはず。
+function classifiedGroupOf(tag) {
+	const result = DanbooruTagClassifier.classifyTags([tag]);
+	const groups = Object.keys(result);
+	assert.equal(
+		groups.length, 1,
+		`tag "${tag}" was not classified into exactly one group (result: ${JSON.stringify(result)})`
+	);
+	return groups[0];
+}
+
+it("each tag is classified into the expected group", function () {
+	assert.equal(classifiedGroupOf('hairclip'), 'clothing');
+	assert.equal(classifiedGroupOf('parallel hairclips'), 'clothing');
+	assert.equal(classifiedGroupOf('socks'), 'clothing');
+	assert.equal(classifiedGroupOf('loose socks'), 'clothing');
+	assert.equal(classifiedGroupOf('one eye closed'), 'face');
+	assert.equal(classifiedGroupOf('interlocked fingers'), 'pose');
+});
+	
+
