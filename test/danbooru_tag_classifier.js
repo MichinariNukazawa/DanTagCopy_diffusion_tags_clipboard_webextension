@@ -39,7 +39,7 @@ const expectedGroups01 = {
 const expectedGroups02 = {
 	basic: ['2girls', 'multiple girls'],
 	character: [
-		'brown hair', 'hair bow', 'long hair', 'side ponytail', 'very long hair',
+		'brown hair', 'long hair', 'side ponytail', 'very long hair',
 		'hair between eyes', 'yellow eyes',
 	],
 	pose: ['hand up'],
@@ -48,7 +48,7 @@ const expectedGroups02 = {
 		'sailor collar', 'grey sailor collar', 'shirt', 'white shirt',
 		'grey skirt', 'pleated skirt', 'skirt',
 		'thighhighs', 'black thighhighs',
-		'bow', 'white bow'],
+		'bow', 'white bow', 'hair bow', ],
 	face: [
 		'pout',
 		'squiggle',
@@ -152,6 +152,10 @@ it("each tag is classified into the expected group", function () {
 	assert.equal(classifiedGroupOf('loose socks'), 'clothing');
 	assert.equal(classifiedGroupOf('one eye closed'), 'face');
 	assert.equal(classifiedGroupOf('interlocked fingers'), 'pose');
+	assert.equal(classifiedGroupOf('cropped legs'), 'view');
+	assert.equal(classifiedGroupOf('cropped shirt'), 'clothing');
+	// TODO
+	// assert.equal(classifiedGroupOf('holding another\'s horns'), 'pose');
 });
 	
 

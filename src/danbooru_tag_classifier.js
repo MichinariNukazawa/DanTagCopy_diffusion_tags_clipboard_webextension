@@ -74,7 +74,6 @@ class DanbooruTagClassifier {
             name: 'costume_meta', keywords: [
               'alternate costume', 'cosplay',
               'age up', 'age down',
-              'obese',
               'chibi', 'deformed',
             ]
           },
@@ -84,14 +83,15 @@ class DanbooruTagClassifier {
               'gardening', 'shopping', 'driving', 'traveling', 'camping', 'skiing',
               'dancing', 'singing', 'playing', 'reading', 'writing', 'drawing', 'painting',
               'hug', 'kiss',
-              'sex', 'penetration', 'ejaculation', 'invitation',
+              'sex', 'penetration', 'ejaculation', 'invitation', 'fellatio',
               'alternate hair length',
               'official alternate',
+              'incoming',
+              'hetero',
             ],
             'words': [
               'yukadon', 'kabedon', 'mizudon',
               'come hither', 'under covers',
-              'incoming gift', 'incoming food', 'incoming drink',
               'masturbation',
               'orgy', 'anal', 'oral', 'vaginal',
               'handjob', 'blowjob', 'facejob', 'facial',
@@ -103,35 +103,44 @@ class DanbooruTagClassifier {
       },
 
       // 構図・視点: 描画範囲、カメラ位置、フォーカス
+      // https://danbooru.donmai.us/wiki_pages/tag_group%3Aimage_composition
       {
         group: 'view', lines: [
           {
             name: 'shot_range', keywords: [
               'full body', 'upper body', 'lower body', 'cowboy shot',
-              'close-up', 'portrait', 'profile', 'cropped', 'out of frame',
-              // 'frame': framed_breasts などがあるので避けた
-            ]
+              'close-up', 'portrait', 'profile', 'out of frame',
+              // 'frame': 'framed breasts' などがあるので避けた
+            ],
+            words: [
+              // 'cropped jacket'等があるので、ここでは厳密マッチのみとした
+              'cropped legs', 'cropped torso', 'cropped arms', 'cropped shoulders', 'cropped head', 'cropped tail',
+            ],
           },
           // 被写体・構図
           { name: 'subject', word: ['trefoil'] },
           {
             name: 'camera', keywords: [
-              'pov', 'from side', 'from above', 'from below', 'from behind', 'dutch angle',
+              'from above', 'from behind', 'from below', 'from side',
+              'dutch angle', 'high up', 'multiple views', 'sideways', 'three-quarter view', 'straight-on', 'upside-down',
+              'pov',
             ]
           },
           {
             // https://danbooru.donmai.us/wiki_pages/the_viewer
             name: 'character_facing',
             words: [
-              'straight-on', 'foreshortening',
-            ], patterns: [
-              /^facing /, // ex. facing viewer
-              // ex. 'attacking viewer'. ただし'looking at viewer'がかからないように処置
+              'foreshortening',
+            ],
+            patterns: [
+              /^facing /,
+              // ただし'looking at viewer'がかからないように処置
               /^\w+ing viewer$/,
             ],
+            samples: ['attacking viewer', 'facing viewer',],
           },
-          { name: 'focus', patterns: [/focus/] },
-          { name: 'detailed', patterns: [/detail/] },
+          { name: 'focus', patterns: [/^focusing /], samples: ['focusing face'] },
+          { name: 'detailed', patterns: [/^detailed /], samples: ['detailed eyes'] },
         ]
       },
 
@@ -139,9 +148,8 @@ class DanbooruTagClassifier {
       {
         group: 'character', lines: [
           {
-            name: 'kind', patterns: [
-              / girl$/, // ex.'cat girl', 'daemon girl',
-            ]
+            name: 'kind', patterns: [/ girl$/,],
+            samples: ['cat girl', 'daemon girl',],
           },
           {
             name: 'body', keywords: [
@@ -149,14 +157,15 @@ class DanbooruTagClassifier {
               'shortstacks', 'pear-shaped figure',
               'curvy',
               'thick', 'chubby', 'fat', 'obese', 'belly',
-              'child', 'old', 'mature', 'male', 'female',
+              'child', 'old', 'mature',
               'futanari', 'futa on female',
-            ]
+              'faceless',
+            ],
           },
           {
             name: 'body_features', keywords: [
               'wide hips', 'hip dips', 'narrow waist', 'plump',
-              'pectoral', 'slim legs', 'wide hips',
+              'pectoral', 'slim legs',
               'flat ass', 'huge ass', 'muscular',
             ],
           },
@@ -164,7 +173,7 @@ class DanbooruTagClassifier {
             name: 'hair', keywords: [
               // 髪型
               // https://danbooru.donmai.us/wiki_pages/tag_group%3Ahair_styles
-              'hair', 'bald', 'sidelock', 'cut', 'chonmage', 'okappa', 'cornrows',
+              'bald', 'sidelock', 'chonmage', 'okappa', 'cornrows',
               'dreadlocks', 'mullet', 'braid', 'bun', 'side up', 'nihongami', 'mizura',
               'ponytail', 'twintail', 'afro', 'bang', 'intake', 'ahoge', 'comb over',
               'mohawk', 'blunt ends',
@@ -173,12 +182,14 @@ class DanbooruTagClassifier {
               'split-color hair', 'streaked hair', 'two-tone hair', 'colored tips',
               //
               'bob', 'cut', 'flattop', 'undercut',
-              'drills', 'sidelock'
+              'drills',
             ],
             words: ['half updo', 'one side up', 'two side up',
               'tri tails', 'quad tails', 'quin tails',
-              'topknot', 'ringlets', 'ahoge', 'sidecut'
+              'topknot', 'ringlets', 'sidecut'
             ],
+            patterns: [/ hair$/, / cut$/,],
+            samples: ['long hair', 'hime cut',],
           },
           {
             name: 'facial_hair', keywords: [
@@ -187,8 +198,9 @@ class DanbooruTagClassifier {
           },
           {
             name: 'ear', patterns: [
-              /ears?$/, // ex. 'cat ears', 'elf ears', 'dog ear'
-            ]
+              / ears?$/,
+            ],
+            samples: ['cat ears', 'elf ears', 'dog ear',],
           },
           {
             // danbooru.donmai.us/wiki_pages/tag_group%3Aeyes_tags
@@ -196,22 +208,26 @@ class DanbooruTagClassifier {
               'sclera',
             ],
             words: [
-              'heterochromia', 'red eyes',
+              'heterochromia',
+              'red eyes',
               'extra eyes', 'missing eye', 'no eyes', 'one-eyed', 'third eye',
               'tareme', 'tsurime',
               'mismatched pupils',
             ],
             patterns: [
-              // ex. 'blue eyes', など
               // 'closed eyes' などはここにかからないようにする('red eyes'も除外されてしまうので別途指定)
-              /\w+(?<!ed|ing) eyes$/,
-              /\w+(?<!ed|ing) pupils$/,
-            ]
+              /.+(?<!ed|ing) eyes$/,
+              /.+(?<!ed|ing) pupils$/,
+              /.+-shaped pupils$/,
+            ],
+            samples: ['blue eyes', 'horizontal pupils', 'heart-shaped pupils',],
+            exclude: { words: ['empty eyes'] },
           },
           {
             name: 'mouth', patterns: [
-              /fangs?$/, // ex. 'fang', 'skin fangs', 'vampire fangs'
-            ]
+              /fangs?$/,
+            ],
+            samples: ['fang', 'skin fangs', 'vampire fangs',],
           },
           {
             name: 'breasts_size', keywords: [
@@ -221,14 +237,16 @@ class DanbooruTagClassifier {
           },
           {
             name: 'body_parts', keywords: [
-              'halo', 'wing', 'horn', 'tail', 'tentacle', 'scales', 'claws', 'spikes', 'fins',
+              'tentacle', 'scales', 'claws', 'spikes', 'fins',
               'nail',
-            ]
+            ],
+            patterns: [/ halo$/, / wings?$/, / horns?$/, / tails?$/,],
+            samples: ['pink halo', 'angel wing', 'daemon horns', 'fox tail',],
           },
           {
-            name: 'skin', keywords: [
-              'skin', 'tan', 'tanlines', 'sun tattoo',
-            ]
+            name: 'skin',
+            patterns: [/ skin$/,],
+            samples: ['blue skin'],
           },
         ]
       },
@@ -238,29 +256,30 @@ class DanbooruTagClassifier {
         group: 'face', lines: [
           {
             name: 'expression', keywords: [
-              'smile', 'grin', 'blush', 'crying', 'tears', 'angry', 'wink',
-              'expressionless', 'expression', 'gently',
+              'smile', 'grin', 'crying', 'wink',
+              'expression', 'gently',
             ]
           },
           // https://danbooru.donmai.us/wiki_pages/tag_group:face_tags
           {
             name: 'emotion', keywords: [
-              'angry', 'anger vein', 'annoyed', 'clenched teeth', 'glaring', 'scowl',
-              'annoyed', 'blush', 'blush stickers', 'embarrassed', 'full-face blush', 'nose blush',
-              'bored', 'closed eyes', 'confident', 'confused', 'crazy', 'despair', 'determined', 'disappointed',
+              'angry', 'annoyed', 'clenched teeth', 'glaring', 'scowl',
+              'embarrassed', 'blush', 'blush stickers', 'full-face blush', 'nose blush',
+              'bored', 'confident', 'confused', 'crazy', 'despair', 'determined', 'disappointed',
               'disdain', 'disgust', 'distress', 'drunk', 'ecstasy', 'envy', 'excited', 'exhausted', 'expressionless',
               'facepalm', 'flustered', 'frustrated', 'furrowed brow', 'grimace', 'guilt', 'happy', 'kubrick stare', 'lonely',
-              'nervous', 'nosebleed', 'one eye closed (winking)', 'round mouth', 'open mouth', 'parted lips', 'pain', 'pout',
+              'nervous', 'nosebleed', 'round mouth', 'parted lips', 'pain', 'pout',
               'puffy cheeks', 'raised eyebrow', 'raised eyebrows', 'raised inner eyebrows', 'rape face', 'rolling eyes', 'sad',
               'depressed', 'frown', 'gloom (expression)', 'tears', 'scared', 'panicking', 'worried', 'serious', 'shaded face', 'shy',
               'sigh', 'skeptical', 'sleepy', 'squinting', 'sulking', 'surprised', 'thinking', 'pensive', 'unamused', 'v-shaped eyebrows',
               'wince', 'struggling',
-              'afterglow', 'ahegao', 'silly', 'ecstasy', 'aroused', 'fucked silly', 'naughty face',
+              'afterglow', 'ahegao', 'silly', 'aroused', 'fucked silly', 'naughty face',
               'ohhoai', 'ohogao', 'seductive smile', 'torogao', 'mind break',
               'doyagao', 'smirk', 'smug', 'troll face',
-              '^^^', 'color drain', 'depressed', 'despair', 'gloom (expression)', 'horrified', 'screaming',
+              'color drain', 'horrified', 'screaming',
               'sobbing', 'traumatized', 'turn pale', 'wavy mouth',
-            ]
+            ],
+            words: ['^^^',],
           },
           {
             name: 'gaze', keywords: [
@@ -273,9 +292,10 @@ class DanbooruTagClassifier {
               '<o>_<o>', '<|>_<|>', '> <', '>3<'
             ],
             patterns: [
-              /^[:;Xx]\w+$/, // ex.':p', 'X3', 'XD'
-              /^\w_\w$/, // ex. 'T_T','>_@'
-            ]
+              /^[:;Xx]\w+$/,
+              /^[^\s]_[^\s]$/,
+            ],
+            samples: [':p', 'X3', 'XD', 'T_T', '>_@',],
           },
           {
             // 目そのものの見た目(character.face_parts)ではなく、口まわりの状態・動き
@@ -288,13 +308,12 @@ class DanbooruTagClassifier {
               'empty eyes', 'wide-eyed', 'sanpaku',
               'jitome',
               'blinking', 'closed eyes', 'one eye closed',
-              'wince',
               'constricted pupils',
             ]
           },
           {
             name: 'face_parts_act', keywords: [
-              'droll', 'saliva', 'sweat', 'snot', 'nosebleed', 'spit', 'vomit',
+              'droll', 'saliva', 'sweat', 'snot', 'spit', 'vomit',
               'tear',
             ]
           },
@@ -329,7 +348,13 @@ class DanbooruTagClassifier {
               // 装飾品に対する動作(手袋・眼鏡・袖・靴など)
               // https://github.com/MichinariNukazawa/DanTagCopy_diffusion_tags_clipboard_webextension 参考
               'adjusting', 'removing', 'putting on', 'biting', 'licking', 'kissing',
+              'kupaa',
             ],
+          },
+          {
+            name: 'body_style',
+            patterns: [/ bulge$/,],
+            samples: ['stomach bulge'],
           },
           {
             name: 'hand_arm', keywords: [
@@ -338,7 +363,8 @@ class DanbooruTagClassifier {
               'beckoning', 'clapping', 'praying', 'saluting', 'waving',
               'finger',
             ],
-            patterns: [/(arm|hand)s? up$/, /(arm|hand)s? down$/,]
+            patterns: [/(arm|hand)s? up$/, /(arm|hand)s? down$/,],
+            samples: ['arms up', 'arms down', 'hands up', 'hands down'],
           },
         ]
       },
@@ -383,16 +409,16 @@ class DanbooruTagClassifier {
               'negligee', 'nightgown', 'sundress',
               'cheongsam', 'qipao', 'kimono', 'yukata', 'hakama', 'obi',
               'hanbok', 'ao dai', 'sari',
-              'playboy bunny', 'bunny suit', 'bunnysuit',
-              'leotard', 'unitard', 'bodysuit', 'catsuit', 'bikini', 'armor',
-              'bodystocking', 'swimsuit',
               'sweater', 'pajamas', 'hoodie', 'cardigan', 'blazer', 'blouse', 'shirt', 't-shirt',
             ]
           },
           {
             name: 'upperbody_detail', keywords: [
-              'shirt', 'collared shirt', 'frill', 'blouse', 'camisole', 'corset',
-              'breasts', 'chest', 'vertical line', 'center frills', 'cloth', 'apron', 'petticoat',
+              'frill', 'camisole', 'corset',
+              'vertical line', 'center frills', 'cloth', 'apron', 'petticoat',
+              'cropped',
+              // ボディーパーツ名のみのタグは、その箇所が露出/透過して見えている服装表現
+              'collarbone', 'breasts', 'chest', 'nipple', 'nipples', 'underboob', 'navel', 'stomach',
             ]
           },
           {
@@ -402,7 +428,7 @@ class DanbooruTagClassifier {
           },
           {
             name: 'legwear', keywords: [
-              'pants', 'skirt', 'shorts',
+              'pants', 'skirt', 'shorts', 'collared shirt',
               'thighhighs', 'pantyhose', 'stocking', 'leggings', 'over-kneehigh', 'kneehigh',
               'socks', 'legwear', 'leg warmer',
               'garter', 'garter straps', 'thigh strap',
@@ -420,12 +446,11 @@ class DanbooruTagClassifier {
               'fishnets', 'garter belt', 'panties', 'boyshort panties', 'strapless bottom',
               'teddy', 'thong', 'g-string', 'pearl thong', 'male underwear', 'boxers',
               'briefs', 'boxer briefs', 'bikini briefs', 'jockstrap', 'ball bra',
-              'penis sheath',
+              'penis sheath', 'crotch',
               'bodysuit', 'gimp suit', 'bondage outfit',
-              'latex', 'monoglove', 'crotchless', 'ass cutout',
-              'backless panties', 'backless pants', 'breastless clothes', 'nippleless clothes',
-              'bikini', 'cupless bra', 'revealing clothes', 'reverse outfit',
-              'anal ball wear', 'maebari', 'pasties',
+              'playboy bunny', 'bunny suit', 'bunnysuit',
+              'leotard', 'unitard', 'catsuit', 'bikini', 'armor',
+              'swimsuit',
             ]
           },
           {
@@ -438,10 +463,10 @@ class DanbooruTagClassifier {
           },
           {
             name: 'cloth_cutout',
+            keywords: ['venus', 'groin',],
             words: [
-              // ボディーパーツ名のみのタグは、その箇所が露出/透過して見えている服装表現
-              'collarbone', 'navel', 'nipple', 'nipples', 'breasts', 'underboob', 'stomach',
               'hips', 'ass', 'anus', 'underbutt', 'pussy', 'vagina',
+              'cameltoe',
             ]
           },
           {
@@ -449,35 +474,44 @@ class DanbooruTagClassifier {
             words: [
               'ass visible through thighs',
               'shrug (clothing)',
+              'tented shirt',
             ],
             keywords: [
               // 露出のある衣装
               'midriff', 'crop top', 'tank top',
               'cropped shirt', 'cropped jacket',
-              'halterneck', 'halter',
               'butt crack',
               'wedgie',
               'tight', 'see-through',              // 布が締まっている衣装, 透けている衣装
               'denim', 'leather', 'fabric',
               'layered',
-              'bottomless', 'topless',
+              'skin tight',
+              'latex', 'monoglove', 'crotchless', 'ass cutout',
+              'backless panties', 'backless pants', 'breastless clothes', 'nippleless clothes',
+              'cupless bra', 'revealing clothes', 'reverse outfit',
+              'anal ball wear', 'maebari', 'pasties',
             ],
             patterns: [
-              /^covered /,      // 布が吸着してボディパーツの形が見える服 ex.'covered navel',
+              // https://danbooru.donmai.us/wiki_pages/impossible_clothes
+              /^covered /,      // 布が吸着してボディパーツの形が見える服
               /^impossible /,   // 肌に吸い付いている服
               /^taut /,         // 布が締まっている服
               /^naked /,
             ],
+            samples: ['covered navel', 'impossible clothes', 'taut clothes', 'naked shirt',],
           },
           {
             name: 'nude_or_nudelike',
             keywords: [
-              'nude', 'topless', 'bare'
+              'nude', 'bottomless', 'topless', 'bare'
             ]
           },
           {
             name: 'other',
-            words: ['makeup', 'eyeliner', 'eyeshadow', 'mascara',]
+            words: [
+              'makeup', 'eyeliner', 'eyeshadow', 'mascara',
+              'tan', 'tanlines', 'tanline peek', 'sun tattoo',
+            ],
           }
         ]
       },
@@ -487,7 +521,7 @@ class DanbooruTagClassifier {
         group: 'background', lines: [
           {
             name: 'place', keywords: [
-              'indoor', 'outdoor', 'forest', 'city', 'room', 'school', 'beach', 'sky',
+              'indoor', 'outdoor', 'forest', 'city', 'school', 'beach', 'sky',
               'architecture', 'building', 'background', 'landscape', 'nature', 'street', 'garden', 'temple',
               'floor', 'table', 'wall', 'window', 'door', 'ceil',
               'room', 'corridor', 'hallway', 'staircase', 'balcony', 'porch', 'patio', 'roof', 'rooftop',
@@ -504,7 +538,7 @@ class DanbooruTagClassifier {
       // その他: 上記以外(未分類タグの受け皿。必ず最後に置く。全タグ保存の不変条件を担保する)
       {
         group: 'other', lines: [
-          { name: 'misc', patterns: [/.*/] },
+          { name: 'misc', patterns: [/.*/], samples: [''] }, // samplesはサンプルなしチェック回避用
         ]
       },
     ];
@@ -524,6 +558,13 @@ class DanbooruTagClassifier {
 
   static _isMatch(tag, rule) {
     const t = tag.trim().toLowerCase();
+
+    // exclude: ルールにマッチしなかったものとして扱う
+    if (rule.exclude) {
+      if (rule.exclude.words && rule.exclude.words.some((w) => t === w.toLowerCase())) {
+        return false;
+      }
+    }
 
     // words: タグ全文との完全一致(部分一致はしない)
     if (rule.words && rule.words.some((w) => t === w.toLowerCase())) {
