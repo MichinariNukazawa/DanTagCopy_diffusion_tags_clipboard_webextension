@@ -245,6 +245,8 @@ class DanbooruTagClassifier {
           },
           {
             name: 'skin',
+            keywords: ['mole',],
+            words: ['freckles', 'warts',],
             patterns: [/ skin$/,],
             samples: ['blue skin'],
           },
@@ -410,13 +412,20 @@ class DanbooruTagClassifier {
               'cheongsam', 'qipao', 'kimono', 'yukata', 'hakama', 'obi',
               'hanbok', 'ao dai', 'sari',
               'sweater', 'pajamas', 'hoodie', 'cardigan', 'blazer', 'blouse', 'shirt', 't-shirt',
+              'bandeau', 'sarashi', 'tube top', 'crop top', 'tank top',
+              'bodysuit', 'gimp suit', 'bondage outfit',
+              'playboy bunny', 'bunny suit', 'bunnysuit',
+              'leotard', 'unitard', 'catsuit', 'bikini', 'armor',
+              'swimsuit',
             ]
           },
           {
             name: 'upperbody_detail', keywords: [
               'frill', 'camisole', 'corset',
-              'vertical line', 'center frills', 'cloth', 'apron', 'petticoat',
+              'vertical line', 'center frills', 'front-tie',
+              'cloth', 'apron', 'petticoat',
               'cropped',
+              'out of sleeve',
               // ボディーパーツ名のみのタグは、その箇所が露出/透過して見えている服装表現
               'collarbone', 'breasts', 'chest', 'nipple', 'nipples', 'underboob', 'navel', 'stomach',
             ]
@@ -424,6 +433,15 @@ class DanbooruTagClassifier {
           {
             name: 'handwear', keywords: [
               'glove', 'gauntlet',
+            ]
+          },
+          {
+            name: 'underwear', keywords: [
+              'lingerie', 'babydoll', 'bodystocking', 'bra', 'bustier', 'chemise',
+              'fishnets', 'garter belt', 'panties', 'boyshort panties', 'strapless bottom',
+              'teddy', 'thong', 'g-string', 'pearl thong', 'male underwear', 'boxers',
+              'briefs', 'boxer briefs', 'bikini briefs', 'jockstrap', 'ball bra',
+              'penis sheath', 'crotch',
             ]
           },
           {
@@ -441,28 +459,15 @@ class DanbooruTagClassifier {
             ]
           },
           {
-            name: 'underwear', keywords: [
-              'lingerie', 'babydoll', 'bodystocking', 'bra', 'bustier', 'chemise',
-              'fishnets', 'garter belt', 'panties', 'boyshort panties', 'strapless bottom',
-              'teddy', 'thong', 'g-string', 'pearl thong', 'male underwear', 'boxers',
-              'briefs', 'boxer briefs', 'bikini briefs', 'jockstrap', 'ball bra',
-              'penis sheath', 'crotch',
-              'bodysuit', 'gimp suit', 'bondage outfit',
-              'playboy bunny', 'bunny suit', 'bunnysuit',
-              'leotard', 'unitard', 'catsuit', 'bikini', 'armor',
-              'swimsuit',
-            ]
-          },
-          {
             name: 'accessory', keywords: [
               'ribbon', 'bow', 'lace', 'earrings', 'earclip', 'bracelet', 'glasses', 'sunglasses', 'mask',
               'monocle', 'goggles', 'scouter', 'bag', 'pouch', 'zipper', 'highleg',
-              'bare shoulders', 'cuffs', 'sleeve', 'belt', 'o-ring',
+              'cuffs', 'sleeve', 'belt', 'o-ring',
               'blindfold', 'eyepatch',
             ]
           },
           {
-            name: 'cloth_cutout',
+            name: 'lower_cloth_cutout',
             keywords: ['venus', 'groin',],
             words: [
               'hips', 'ass', 'anus', 'underbutt', 'pussy', 'vagina',
@@ -475,10 +480,10 @@ class DanbooruTagClassifier {
               'ass visible through thighs',
               'shrug (clothing)',
               'tented shirt',
+              'bare shoulders', 'off shoulder', 'off-shoulder',
             ],
             keywords: [
-              // 露出のある衣装
-              'midriff', 'crop top', 'tank top',
+              'midriff',
               'cropped shirt', 'cropped jacket',
               'butt crack',
               'wedgie',
@@ -490,6 +495,9 @@ class DanbooruTagClassifier {
               'backless panties', 'backless pants', 'breastless clothes', 'nippleless clothes',
               'cupless bra', 'revealing clothes', 'reverse outfit',
               'anal ball wear', 'maebari', 'pasties',
+              'removed', 'around waist', 'on shoulders', 'over shoulder', 'unworn',
+              'strap', 'slip',
+              'strapless',
             ],
             patterns: [
               // https://danbooru.donmai.us/wiki_pages/impossible_clothes
@@ -498,7 +506,7 @@ class DanbooruTagClassifier {
               /^taut /,         // 布が締まっている服
               /^naked /,
             ],
-            samples: ['covered navel', 'impossible clothes', 'taut clothes', 'naked shirt',],
+            samples: ['covered navel', 'impossible clothes', 'taut clothes', 'naked shirt', ],
           },
           {
             name: 'nude_or_nudelike',
