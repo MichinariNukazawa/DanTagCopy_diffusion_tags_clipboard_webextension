@@ -48,7 +48,7 @@ const expectedGroups02 = {
 		'sailor collar', 'grey sailor collar', 'shirt', 'white shirt',
 		'grey skirt', 'pleated skirt', 'skirt',
 		'thighhighs', 'black thighhighs',
-		'bow', 'white bow', 'hair bow', ],
+		'bow', 'white bow', 'hair bow',],
 	face: [
 		'pout',
 		'squiggle',
@@ -146,19 +146,28 @@ function classifiedGroupOf(tag) {
 }
 
 it("each tag is classified into the expected group", function () {
-	assert.equal(classifiedGroupOf('hairclip'), 'clothing');
-	assert.equal(classifiedGroupOf('parallel hairclips'), 'clothing');
-	assert.equal(classifiedGroupOf('socks'), 'clothing');
-	assert.equal(classifiedGroupOf('loose socks'), 'clothing');
-	assert.equal(classifiedGroupOf('one eye closed'), 'face');
-	assert.equal(classifiedGroupOf('interlocked fingers'), 'pose');
-	assert.equal(classifiedGroupOf('cropped legs'), 'view');
-	assert.equal(classifiedGroupOf('cropped shirt'), 'clothing');
-	assert.equal(classifiedGroupOf('bare back'), 'clothing');
-	assert.equal(classifiedGroupOf('alternate breast size (larger)'), 'theme');
-	assert.equal(classifiedGroupOf('animal ear fluff'), 'character');
-	// TODO
-	// assert.equal(classifiedGroupOf('holding another\'s horns'), 'pose');
-});
-	
+	const mismatches = [];
 
+	[
+		['hairclip', 'clothing'],
+		['parallel hairclips', 'clothing'],
+		['socks', 'clothing'],
+		['loose socks', 'clothing'],
+		['one eye closed', 'face'],
+		['interlocked fingers', 'pose'],
+		['cropped legs', 'view'],
+		['cropped shirt', 'clothing'],
+		['bare back', 'clothing'],
+		['alternate breast size (larger)', 'theme'],
+		['animal ear fluff', 'character'],
+		// TODO
+		// ['holding another\'s horns', 'pose'],
+	].forEach(([tag, expectedGroup]) => {
+		const actualGroup = classifiedGroupOf(tag);
+		if (actualGroup !== expectedGroup) {
+			mismatches.push(`tag "${tag}" was classified as "${actualGroup}", but expected "${expectedGroup}"`);
+		}
+	});
+
+	assert.deepEqual(mismatches, []);
+});
