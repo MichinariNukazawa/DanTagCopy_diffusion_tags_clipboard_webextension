@@ -75,7 +75,9 @@ class DanbooruTagClassifier {
               'alternate costume', 'cosplay',
               'age up', 'age down',
               'chibi', 'deformed',
-            ]
+              'alternate breast size',
+            ],
+            words: ['alternate species', 'alternate hairstyle',],
           },
           {
             name: 'work_act', keywords: [
@@ -95,8 +97,6 @@ class DanbooruTagClassifier {
               'masturbation',
               'orgy', 'anal', 'oral', 'vaginal',
               'handjob', 'blowjob', 'facejob', 'facial',
-              'alternate species', 'alternate breast size',
-              'alternate hairstyle',
             ],
           },
         ]
@@ -186,7 +186,10 @@ class DanbooruTagClassifier {
             ],
             words: ['half updo', 'one side up', 'two side up',
               'tri tails', 'quad tails', 'quin tails',
-              'topknot', 'ringlets', 'sidecut'
+              'topknot', 'ringlets', 'sidecut',
+              'hair intake',
+              'hair ears', 'hair flaps', 'hair horns', 'hair wings',
+              'head wings', 'single head wing', 'head fins',
             ],
             patterns: [/ hair$/, / cut$/,],
             samples: ['long hair', 'hime cut',],
@@ -197,7 +200,9 @@ class DanbooruTagClassifier {
             ]
           },
           {
-            name: 'ear', patterns: [
+            name: 'ear',
+            keywords: ['animal ear'],
+            patterns: [
               / ears?$/,
             ],
             samples: ['cat ears', 'elf ears', 'dog ear',],
@@ -358,6 +363,7 @@ class DanbooruTagClassifier {
             patterns: [/ bulge$/,],
             samples: ['stomach bulge'],
           },
+          { name: 'head_pose', keywords: ['head tilt', 'shaft look'], },
           {
             name: 'hand_arm', keywords: [
               'hand on', 'hands on', 'arm', 'holding', 'crossed arms', 'hands clasped', 'hand behind',
@@ -411,7 +417,8 @@ class DanbooruTagClassifier {
               'negligee', 'nightgown', 'sundress',
               'cheongsam', 'qipao', 'kimono', 'yukata', 'hakama', 'obi',
               'hanbok', 'ao dai', 'sari',
-              'sweater', 'pajamas', 'hoodie', 'cardigan', 'blazer', 'blouse', 'shirt', 't-shirt',
+              'sweater', 'pajamas', 'hoodie', 'cardigan', 'blazer', 'blouse',
+              'shirt', 't-shirt', 'collared shirt',
               'bandeau', 'sarashi', 'tube top', 'crop top', 'tank top',
               'bodysuit', 'gimp suit', 'bondage outfit',
               'playboy bunny', 'bunny suit', 'bunnysuit',
@@ -427,7 +434,11 @@ class DanbooruTagClassifier {
               'cropped',
               'out of sleeve',
               // ボディーパーツ名のみのタグは、その箇所が露出/透過して見えている服装表現
-              'collarbone', 'breasts', 'chest', 'nipple', 'nipples', 'underboob', 'navel', 'stomach',
+              'collarbone', 'breasts', 'chest', 'nipple', 'nipples',
+              'underboob', 'sideboob', 'backboob',
+              'linea alba', 'median furrow', 'shoulder blades',
+              'muscle', 'toned',
+              'navel', 'stomach',
             ]
           },
           {
@@ -446,9 +457,11 @@ class DanbooruTagClassifier {
           },
           {
             name: 'legwear', keywords: [
-              'pants', 'skirt', 'shorts', 'collared shirt',
+              'pants', 'shorts',
+              'skirt', 'miniskirt', 'microskirt', 'overskirt',
+              'tutu',
               'thighhighs', 'pantyhose', 'stocking', 'leggings', 'over-kneehigh', 'kneehigh',
-              'socks', 'legwear', 'leg warmer',
+              'socks', 'legwear', 'leg warmer', 'tabi',
               'garter', 'garter straps', 'thigh strap',
               'zettai ryouiki', 'fine fabric emphasis',
             ]
@@ -456,14 +469,16 @@ class DanbooruTagClassifier {
           {
             name: 'footwear', keywords: [
               'boots', 'shoes', 'footwear', 'sandals', 'heels',
+              'sneakers', 'loafers', 'geta', 'okobo', 'uwabaki',
             ]
           },
           {
             name: 'accessory', keywords: [
               'ribbon', 'bow', 'lace', 'earrings', 'earclip', 'bracelet', 'glasses', 'sunglasses', 'mask',
-              'monocle', 'goggles', 'scouter', 'bag', 'pouch', 'zipper', 'highleg',
+              'monocle', 'goggles', 'scouter', 'zipper', 'highleg',
               'cuffs', 'sleeve', 'belt', 'o-ring',
               'blindfold', 'eyepatch',
+              'bag', 'pouch', 'briefcase', 'backpack', 'randoseru',
             ]
           },
           {
@@ -506,7 +521,7 @@ class DanbooruTagClassifier {
               /^taut /,         // 布が締まっている服
               /^naked /,
             ],
-            samples: ['covered navel', 'impossible clothes', 'taut clothes', 'naked shirt', ],
+            samples: ['covered navel', 'impossible clothes', 'taut clothes', 'naked shirt',],
           },
           {
             name: 'nude_or_nudelike',

@@ -154,6 +154,9 @@ it("each tag is classified into the expected group", function () {
 	assert.equal(classifiedGroupOf('interlocked fingers'), 'pose');
 	assert.equal(classifiedGroupOf('cropped legs'), 'view');
 	assert.equal(classifiedGroupOf('cropped shirt'), 'clothing');
+	assert.equal(classifiedGroupOf('bare back'), 'clothing');
+	assert.equal(classifiedGroupOf('alternate breast size (larger)'), 'theme');
+	assert.equal(classifiedGroupOf('animal ear fluff'), 'character');
 	// TODO
 	// assert.equal(classifiedGroupOf('holding another\'s horns'), 'pose');
 });
