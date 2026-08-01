@@ -74,6 +74,7 @@ class DanbooruTagClassifier {
             name: 'costume_meta', keywords: [
               'alternate costume', 'cosplay',
               'age up', 'age down',
+              'ageplay', 'adult baby',
               'chibi', 'deformed',
               'alternate breast size',
             ],
@@ -139,7 +140,7 @@ class DanbooruTagClassifier {
             ],
             samples: ['attacking viewer', 'facing viewer',],
           },
-          { name: 'focus', patterns: [/^focusing /], samples: ['focusing face'] },
+          { name: 'focus', patterns: [/^focusing /, / focus$/], samples: ['focusing face', 'foot focus',] },
           { name: 'detailed', patterns: [/^detailed /], samples: ['detailed eyes'] },
         ]
       },
@@ -148,11 +149,11 @@ class DanbooruTagClassifier {
       {
         group: 'character', lines: [
           {
-            name: 'kind', patterns: [/ girl$/,],
+            name: 'race', patterns: [/ girl$/,],
             samples: ['cat girl', 'daemon girl',],
           },
           {
-            name: 'body', keywords: [
+            name: 'kind', keywords: [
               'usuhoso', 'skinny', 'loli', 'shota', 'lolibaba', 'mesugaki', 'oppai loli', 'petite',
               'shortstacks', 'pear-shaped figure',
               'curvy',
@@ -167,6 +168,7 @@ class DanbooruTagClassifier {
               'wide hips', 'hip dips', 'narrow waist', 'plump',
               'pectoral', 'slim legs',
               'flat ass', 'huge ass', 'muscular',
+              'hunched over',
             ],
           },
           {
@@ -243,8 +245,8 @@ class DanbooruTagClassifier {
           {
             name: 'body_parts', keywords: [
               'tentacle', 'scales', 'claws', 'spikes', 'fins',
-              'nail',
             ],
+            words:['halo'],
             patterns: [/ halo$/, / wings?$/, / horns?$/, / tails?$/,],
             samples: ['pink halo', 'angel wing', 'daemon horns', 'fox tail',],
           },
@@ -254,6 +256,12 @@ class DanbooruTagClassifier {
             words: ['freckles', 'warts',],
             patterns: [/ skin$/,],
             samples: ['blue skin'],
+          },
+          {
+            name: 'other', keywords: [
+              'nail', 'fingernails',
+              'toenail', 'toeprint',
+            ],
           },
         ]
       },
@@ -314,9 +322,11 @@ class DanbooruTagClassifier {
             words: [
               'empty eyes', 'wide-eyed', 'sanpaku',
               'jitome',
-              'blinking', 'closed eyes', 'one eye closed',
+              'blinking', 'closed eyes', 'one eye closed', 'half-closed eyes',
               'constricted pupils',
-            ]
+            ],
+            patterns: [/\w-eyed/,],
+            samples: ['wide-eyed',],
           },
           {
             name: 'face_parts_act', keywords: [
@@ -349,13 +359,14 @@ class DanbooruTagClassifier {
           {
             name: 'body_action', keywords: [
               'arched back', 'standing', 'sitting', 'kneeling', 'lying', 'squatting',
-              'running', 'jumping', 'leaning', 'stretching', 'spread legs', 'bent over',
+              'running', 'jumping', 'leaning', 'stretching', 'spread legs', 'bent over', 'frontbend',
               'relax', 'tense', 'twist', 'turn', 'bend', 'crouch',
               'reach', 'grab', 'hold', 'push', 'pull', 'lift', 'drop',
               // 装飾品に対する動作(手袋・眼鏡・袖・靴など)
               // https://github.com/MichinariNukazawa/DanTagCopy_diffusion_tags_clipboard_webextension 参考
               'adjusting', 'removing', 'putting on', 'biting', 'licking', 'kissing',
               'kupaa',
+              'zarei', 'dogeza', 'ozigi', 'bowing',
             ],
           },
           {
@@ -374,6 +385,10 @@ class DanbooruTagClassifier {
             patterns: [/(arm|hand)s? up$/, /(arm|hand)s? down$/,],
             samples: ['arms up', 'arms down', 'hands up', 'hands down'],
           },
+          { name: 'lower_body', 
+            words: ['folded', 'wariza', 'seiza','yokozuwari', ], 
+            patterns: [/(leg|foot|feet)s? up$/, /(leg|foot|feet)s? down$/, / legs$/,], 
+            samples: ['legs up', 'legs down', 'feet up', 'feet down', 'm legs',] },
         ]
       },
 
@@ -424,6 +439,7 @@ class DanbooruTagClassifier {
               'playboy bunny', 'bunny suit', 'bunnysuit',
               'leotard', 'unitard', 'catsuit', 'bikini', 'armor',
               'swimsuit',
+              'smock', 'jojifuku',
             ]
           },
           {
@@ -448,6 +464,7 @@ class DanbooruTagClassifier {
           },
           {
             name: 'underwear', keywords: [
+              'underwear',
               'lingerie', 'babydoll', 'bodystocking', 'bra', 'bustier', 'chemise',
               'fishnets', 'garter belt', 'panties', 'boyshort panties', 'strapless bottom',
               'teddy', 'thong', 'g-string', 'pearl thong', 'male underwear', 'boxers',
@@ -461,7 +478,7 @@ class DanbooruTagClassifier {
               'skirt', 'miniskirt', 'microskirt', 'overskirt',
               'tutu',
               'thighhighs', 'pantyhose', 'stocking', 'leggings', 'over-kneehigh', 'kneehigh',
-              'socks', 'legwear', 'leg warmer', 'tabi',
+              'socks', 'legwear', 'leg warmer', 'soles', 'tabi', 'jika-tabi',
               'garter', 'garter straps', 'thigh strap',
               'zettai ryouiki', 'fine fabric emphasis',
             ]
@@ -469,17 +486,24 @@ class DanbooruTagClassifier {
           {
             name: 'footwear', keywords: [
               'boots', 'shoes', 'footwear', 'sandals', 'heels',
-              'sneakers', 'loafers', 'geta', 'okobo', 'uwabaki',
+              'sneakers', 'loafers',
+              'uwabaki',
+              'geta', 'okobo', 'zouri', 'waraji',
             ]
           },
           {
             name: 'accessory', keywords: [
-              'ribbon', 'bow', 'lace', 'earrings', 'earclip', 'bracelet', 'glasses', 'sunglasses', 'mask',
+              'ribbon', 'bow', 'lace', 'pin', 
+              'earrings', 'earclip', 'bracelet',
+              'glasses', 'sunglasses', 'mask',
               'monocle', 'goggles', 'scouter', 'zipper', 'highleg',
               'cuffs', 'sleeve', 'belt', 'o-ring',
               'blindfold', 'eyepatch',
               'bag', 'pouch', 'briefcase', 'backpack', 'randoseru',
-            ]
+              'name tag',
+            ],
+            patterns: [/^hair /,],
+            samples: ['hair bobbles',]
           },
           {
             name: 'lower_cloth_cutout',
@@ -487,6 +511,7 @@ class DanbooruTagClassifier {
             words: [
               'hips', 'ass', 'anus', 'underbutt', 'pussy', 'vagina',
               'cameltoe',
+              'feet', 'toes',
             ]
           },
           {
@@ -496,6 +521,7 @@ class DanbooruTagClassifier {
               'shrug (clothing)',
               'tented shirt',
               'bare shoulders', 'off shoulder', 'off-shoulder',
+              'friction ridges',
             ],
             keywords: [
               'midriff',
@@ -527,7 +553,8 @@ class DanbooruTagClassifier {
             name: 'nude_or_nudelike',
             keywords: [
               'nude', 'bottomless', 'topless', 'bare'
-            ]
+            ],
+            word: ['barefoot',],
           },
           {
             name: 'other',

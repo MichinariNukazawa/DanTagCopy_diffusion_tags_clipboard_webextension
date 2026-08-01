@@ -160,6 +160,7 @@ it("each tag is classified into the expected group", function () {
 		['bare back', 'clothing'],
 		['alternate breast size (larger)', 'theme'],
 		['animal ear fluff', 'character'],
+		['halo', 'character'],
 		// TODO
 		// ['holding another\'s horns', 'pose'],
 	].forEach(([tag, expectedGroup]) => {
