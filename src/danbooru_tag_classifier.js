@@ -246,7 +246,7 @@ class DanbooruTagClassifier {
             name: 'body_parts', keywords: [
               'tentacle', 'scales', 'claws', 'spikes', 'fins',
             ],
-            words: ['halo'],
+            words: ['halo', 'wings', 'horns', 'tail',],
             patterns: [/ halo$/, / wings?$/, / horns?$/, / tails?$/,],
             samples: ['pink halo', 'angel wing', 'daemon horns', 'fox tail',],
           },
@@ -393,6 +393,10 @@ class DanbooruTagClassifier {
             words: ['folded', 'wariza', 'seiza', 'yokozuwari',],
             patterns: [/(leg|foot|feet)s? up$/, /(leg|foot|feet)s? down$/, / legs$/,],
             samples: ['legs up', 'legs down', 'feet up', 'feet down', 'm legs',]
+          },
+          {
+            name: 'other',
+            keywords: ['outstretched',],
           },
         ]
       },
