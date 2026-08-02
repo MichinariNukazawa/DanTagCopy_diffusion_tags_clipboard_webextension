@@ -246,7 +246,7 @@ class DanbooruTagClassifier {
             name: 'body_parts', keywords: [
               'tentacle', 'scales', 'claws', 'spikes', 'fins',
             ],
-            words:['halo'],
+            words: ['halo'],
             patterns: [/ halo$/, / wings?$/, / horns?$/, / tails?$/,],
             samples: ['pink halo', 'angel wing', 'daemon horns', 'fox tail',],
           },
@@ -261,7 +261,10 @@ class DanbooruTagClassifier {
             name: 'other', keywords: [
               'nail', 'fingernails',
               'toenail', 'toeprint',
+              'scar',
             ],
+            patterns: [/^scar on /,],
+            samples: ['scar on face', 'scar on arm',],
           },
         ]
       },
@@ -385,10 +388,12 @@ class DanbooruTagClassifier {
             patterns: [/(arm|hand)s? up$/, /(arm|hand)s? down$/,],
             samples: ['arms up', 'arms down', 'hands up', 'hands down'],
           },
-          { name: 'lower_body', 
-            words: ['folded', 'wariza', 'seiza','yokozuwari', ], 
-            patterns: [/(leg|foot|feet)s? up$/, /(leg|foot|feet)s? down$/, / legs$/,], 
-            samples: ['legs up', 'legs down', 'feet up', 'feet down', 'm legs',] },
+          {
+            name: 'lower_body',
+            words: ['folded', 'wariza', 'seiza', 'yokozuwari',],
+            patterns: [/(leg|foot|feet)s? up$/, /(leg|foot|feet)s? down$/, / legs$/,],
+            samples: ['legs up', 'legs down', 'feet up', 'feet down', 'm legs',]
+          },
         ]
       },
 
@@ -450,7 +455,8 @@ class DanbooruTagClassifier {
               'cropped',
               'out of sleeve',
               // ボディーパーツ名のみのタグは、その箇所が露出/透過して見えている服装表現
-              'collarbone', 'breasts', 'chest', 'nipple', 'nipples',
+              'collarbone', 'neck', 'armpit cutouts', 'armpit crease',
+              'breasts', 'chest', 'nipple', 'nipples', 'cleavage', 'areolae',
               'underboob', 'sideboob', 'backboob',
               'linea alba', 'median furrow', 'shoulder blades',
               'muscle', 'toned',
@@ -493,7 +499,7 @@ class DanbooruTagClassifier {
           },
           {
             name: 'accessory', keywords: [
-              'ribbon', 'bow', 'lace', 'pin', 
+              'ribbon', 'bow', 'lace', 'pin',
               'earrings', 'earclip', 'bracelet',
               'glasses', 'sunglasses', 'mask',
               'monocle', 'goggles', 'scouter', 'zipper', 'highleg',
@@ -539,6 +545,7 @@ class DanbooruTagClassifier {
               'removed', 'around waist', 'on shoulders', 'over shoulder', 'unworn',
               'strap', 'slip',
               'strapless',
+              'unbuttoned', 'unzipped',
             ],
             patterns: [
               // https://danbooru.donmai.us/wiki_pages/impossible_clothes
@@ -546,8 +553,15 @@ class DanbooruTagClassifier {
               /^impossible /,   // 肌に吸い付いている服
               /^taut /,         // 布が締まっている服
               /^naked /,
+              / print$/,
+              / aside$/,
             ],
-            samples: ['covered navel', 'impossible clothes', 'taut clothes', 'naked shirt',],
+            samples: [
+              'covered navel', 'impossible clothes', 
+              'taut clothes', 'naked shirt', 
+              'animal print', 'cow print',
+              'panties aside', 
+            ],
           },
           {
             name: 'nude_or_nudelike',
