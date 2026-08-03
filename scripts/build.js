@@ -6,35 +6,16 @@ const srcDir = path.join(__dirname, '..', 'src');
 const distDirFirefox = path.join(__dirname, '..', 'dist.firefox');
 const distDirChrome = path.join(__dirname, '..', 'dist.chrome');
 
-const { exec } = require('child_process');
+const { execFile } = require('child_process');
 
 function runNpmCommand(target) {
-  exec(`npm run ${target}`, (error, stdout, stderr) => {
+  execFile('npm', ['run', target], (error, stdout, stderr) => {
     if (error) {
       console.error('Error running Browserify:', error);
     } else {
       console.log('Browserify completed');
     }
   });
-}
-
-// srcディレクトリの内容をdistディレクトリにコピーする関数
-async function copyFiles(srcDir, distDir) {
-  try {
-    await fs.emptyDir(distDir);
-    const files = [
-      'icons/icon128.png',
-      'content.js',
-      'popup/popup_menu.html', 'popup/popup_menu.js', 'popup/style.css',
-    ];
-    for(const file of files){
-      await fs.copy(path.join(srcDir, file), path.join(distDir, file));
-    }
-    console.log(`Files copied to ${distDir}`);
-    runNpmCommand('browserify:event');
-  } catch (err) {
-    console.error('Error copying files:', err);
-  }
 }
 
 // ファイルの変更を監視して自動的に再ビルドする関数
@@ -49,18 +30,36 @@ function watchFiles() {
 
 // Firefox向けのビルド
 async function buildFirefox() {
-  await copyFiles(srcDir, distDirFirefox);
-  // Firefox向けの特定の処理を行う場合は、ここに追加の処理を記述する
-  await fs.copy(path.join(srcDir, 'manifest.firefox.json'), path.join(distDirFirefox, 'manifest.json'));
-  console.log('Firefox build completed');
+  try {
+    await fs.emptyDir(distDirFirefox);
+    await fs.copy(path.join(srcDir, 'icons/icon128.png'), path.join(distDirFirefox, 'icons/icon128.png'));
+    await fs.copy(path.join(srcDir, 'content.js'), path.join(distDirFirefox, 'content.js'));
+    await fs.copy(path.join(srcDir, 'popup/popup_menu.html'), path.join(distDirFirefox, 'popup/popup_menu.html'));
+    await fs.copy(path.join(srcDir, 'popup/popup_menu.js'), path.join(distDirFirefox, 'popup/popup_menu.js'));
+    await fs.copy(path.join(srcDir, 'popup/style.css'), path.join(distDirFirefox, 'popup/style.css'));
+    await fs.copy(path.join(srcDir, 'manifest.firefox.json'), path.join(distDirFirefox, 'manifest.json'));
+    console.log('Firefox build completed');
+    runNpmCommand('browserify:event');
+  } catch (err) {
+    console.error('Error copying files:', err);
+  }
 }
 
 // Chrome向けのビルド
 async function buildChrome() {
-  await copyFiles(srcDir, distDirChrome);
-  // Chrome向けの特定の処理を行う場合は、ここに追加の処理を記述する
-  await fs.copy(path.join(srcDir, 'manifest.chrome.json'), path.join(distDirChrome, 'manifest.json'));
-  console.log('Chrome build completed');
+  try {
+    await fs.emptyDir(distDirChrome);
+    await fs.copy(path.join(srcDir, 'icons/icon128.png'), path.join(distDirChrome, 'icons/icon128.png'));
+    await fs.copy(path.join(srcDir, 'content.js'), path.join(distDirChrome, 'content.js'));
+    await fs.copy(path.join(srcDir, 'popup/popup_menu.html'), path.join(distDirChrome, 'popup/popup_menu.html'));
+    await fs.copy(path.join(srcDir, 'popup/popup_menu.js'), path.join(distDirChrome, 'popup/popup_menu.js'));
+    await fs.copy(path.join(srcDir, 'popup/style.css'), path.join(distDirChrome, 'popup/style.css'));
+    await fs.copy(path.join(srcDir, 'manifest.chrome.json'), path.join(distDirChrome, 'manifest.json'));
+    console.log('Chrome build completed');
+    runNpmCommand('browserify:event');
+  } catch (err) {
+    console.error('Error copying files:', err);
+  }
 }
 
 // メインのビルド関数
